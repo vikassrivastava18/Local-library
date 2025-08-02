@@ -19,6 +19,9 @@ services:
       dockerfile: frontend.Dockerfile
     volumes:
       - ./frontend/library:/app
+      - /app/node_modules
     working_dir: /app
     ports:
-      - "4200:4200"
+      - "8080:8080"
+    environment:
+      - CHOKIDAR_USEPOLLING=true      

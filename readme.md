@@ -29,4 +29,4 @@ Build an application for a local library where people can find their favorite bo
 - User authentication with ID proof.
 - Account approval by librarian after ID verification.
 - Unlimited access for approved users.
-- Librarian ability to
+- Librarian ability to blacklist a user.

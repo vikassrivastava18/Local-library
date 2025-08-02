@@ -1,21 +1,18 @@
-# frontend.Dockerfile
-
-FROM node:22.17.1
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy only dependency descriptors first
 COPY ./frontend/library/package*.json ./
-
-# Install dependencies
-RUN npm install --omit=optional
-
-# Install Angular CLI globally
-RUN npm install -g @angular/cli@20.1.1
+RUN npm install
 
 # Copy application code
 COPY ./frontend/library /app
 
-EXPOSE 4200
+# Expose the Vue dev server port
+EXPOSE 8080
 
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+# Enable file watching in Docker (important for hot reload)
+ENV CHOKIDAR_USEPOLLING=true
+
+# Start the Vue dev server
+CMD ["npm", "run", "serve", "--", "--host", "0.0.0.0"]
