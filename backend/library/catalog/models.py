@@ -1,10 +1,10 @@
 from django.db import models
+from datetime import date
 from django.contrib.auth import get_user_model
 from django.urls import reverse # Used in get_absolute_url() to get URL for the specified ID
-from django.contrib.auth.models import AbstractUser
-
-from django.db.models import UniqueConstraint # Constrains fields to unique values
 from django.db.models.functions import Lower # Returns lower cased value of a field
+from django.db.models import UniqueConstraint # Constrains fields to unique values
+
 # Create your models here.
 
 class Genre(models.Model):
@@ -100,7 +100,7 @@ class BookInstance(models.Model):
     book = models.ForeignKey('Book', on_delete=models.RESTRICT, null=True)
     imprint = models.CharField(max_length=200)
     due_back = models.DateField(null=True, blank=True)
-    loaned_by = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True)
+    borrower = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
     LOAN_STATUS = (
         ('m', 'Maintenance'),
         ('o', 'On loan'),
@@ -118,6 +118,12 @@ class BookInstance(models.Model):
 
     class Meta:
         ordering = ['due_back']
+        permissions = (('can_mark_returned', 'Set book as returned'),)
+
+
+    @property
+    def is_overdue(self):
+        return self.due_back and self.due_back < date.today()
 
     def __str__(self):
         """String for representing the Model object."""

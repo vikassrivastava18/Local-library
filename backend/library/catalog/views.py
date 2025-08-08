@@ -1,10 +1,11 @@
+from django.db.models import F
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, BasePermission
 
 from .models import Book, BookInstance, Author
-from .serializers import BookSerializer, AuthorSerializer
+from .serializers import BookSerializer, AuthorSerializer, BookInstanceSerializer
 
 
 class IndexView(APIView):
@@ -48,3 +49,33 @@ class AuthorDetailView(generics.RetrieveAPIView):
     queryset = Author.objects.all()
     
 
+class LoanedBooksListView(generics.ListAPIView):
+    serializer_class = BookInstanceSerializer
+    paginate_by = 10
+
+    def get_queryset(self):
+        return (
+            BookInstance.objects.filter(borrower=self.request.user)
+                                .filter(status__exact='o')
+                                .order_by('due_back')
+        )
+
+
+class CanMarkReturnedPermission(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.has_perm('catalog.can_mark_returned')
+
+
+class MarkBookAsReturnedView(generics.UpdateAPIView):
+    permission_classes = [CanMarkReturnedPermission]
+    serializer_class = BookInstanceSerializer
+    queryset = BookInstance.objects.all()
+
+
+class BoorowedBooksView(generics.ListAPIView):
+    permission_classes = [CanMarkReturnedPermission]
+    serializer_class = BookInstanceSerializer
+    queryset = BookInstance.objects.all()
+
+    
+    
