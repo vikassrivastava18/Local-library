@@ -40,6 +40,7 @@
       Featured Books
     </h2>
     <div class="row g-3 justify-content-center">
+      
       <!-- Book 1 -->
       <div class="col-sm-6 col-md-4 col-lg-3">
         <div class="book-card h-100">
