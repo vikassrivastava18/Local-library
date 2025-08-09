@@ -16,7 +16,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth.views import LoginView
 from rest_framework.authtoken import views
 
     
@@ -24,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.obtain_auth_token, name='api-token'),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('catalog/', include('catalog.urls'))
+    path('catalog/', include('catalog.urls')),
+    path('staff/', include('staff.urls'))
 ]
-
 
