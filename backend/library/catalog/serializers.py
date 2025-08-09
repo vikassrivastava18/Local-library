@@ -7,6 +7,8 @@ class BookSerializer(serializers.ModelSerializer):
         Serializer for validating a book. 
         Validation rules same as that defined in the model Book.
     """
+    book_author = serializers.CharField(source='author.first_name', read_only=True)
+    
     class Meta:
         model = Book
         fields = '__all__'
