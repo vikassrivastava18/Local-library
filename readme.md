@@ -1,4 +1,4 @@
-# Local Library Application
+# Tribute to Mozilla tutorial on Django
 ![App Screenshot](https://i.ibb.co/wrzgw07Y/Screenshot-2025-07-16-130529.png)
 
 ## Purpose
@@ -21,12 +21,12 @@ Build an application for a local library where people can find their favorite bo
 ## Technology Stack
 
 - **Backend:** Django  
-- **Frontend:** Angular  
+- **Frontend:** VueJS  
 - **Containerization:** Docker
 
 ## Features
 
 - User authentication with ID proof.
 - Account approval by librarian after ID verification.
-- Unlimited access for approved users.
 - Librarian ability to blacklist a user.
+

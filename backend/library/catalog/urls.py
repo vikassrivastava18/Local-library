@@ -7,7 +7,6 @@ from .views import (BookListView,
                     LoanedBooksListView,
                     )
 
-
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('books/', BookListView.as_view(), name='books'),
