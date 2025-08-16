@@ -2,7 +2,7 @@ from django.db.models import F
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, BasePermission
+from rest_framework.permissions import AllowAny
 
 from .models import Book, BookInstance, Author
 from .serializers import BookSerializer, AuthorSerializer, BookInstanceSerializer
@@ -61,21 +61,7 @@ class LoanedBooksListView(generics.ListAPIView):
         )
 
 
-class CanMarkReturnedPermission(BasePermission):
-    def has_permission(self, request, view):
-        return request.user.has_perm('catalog.can_mark_returned')
 
-
-class MarkBookAsReturnedView(generics.UpdateAPIView):
-    permission_classes = [CanMarkReturnedPermission]
-    serializer_class = BookInstanceSerializer
-    queryset = BookInstance.objects.all()
-
-
-class BoorowedBooksView(generics.ListAPIView):
-    permission_classes = [CanMarkReturnedPermission]
-    serializer_class = BookInstanceSerializer
-    queryset = BookInstance.objects.all()
 
     
     
