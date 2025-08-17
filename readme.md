@@ -30,3 +30,33 @@ Build an application for a local library where people can find their favorite bo
 - Account approval by librarian after ID verification.
 - Librarian ability to blacklist a user.
 
+
+## Running the Application
+
+Follow these steps to run the application using Docker:
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/vikassrivastava18/Local-library.git
+    cd Local-library
+    ```
+
+2. Build the Docker containers:
+    ```bash
+    docker-compose build
+    ```
+
+3. Start the application:
+    ```bash
+    docker-compose up
+    ```
+
+4. Access the application in your browser at `http://localhost:8080`.
+
+## Stopping the Application
+
+To stop the application, run:
+```bash
+docker-compose down
+```
+
