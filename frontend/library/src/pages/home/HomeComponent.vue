@@ -1,17 +1,16 @@
 <template>
   <!-- Navbar -->
-  <nav-component></nav-component>
+  <nav-component />
   <!-- Main Content -->
   <main class="container my-5">
     <!-- Quote Section -->
     <section class="mb-5 text-center px-3">
       <blockquote class="fs-4 fst-italic text-secondary mx-auto"
         style="max-width: 700px; border-left: 4px solid var(--accent-color); padding-left: 1rem;">
-        “The more that you read, the more things you will know. The more that you learn, the more places you’ll go.”
-        <footer class="blockquote-footer mt-2">Dr. Seuss</footer>
+        “I will learn whatever is great, wherever I find it.”
+        <footer class="blockquote-footer mt-2">Swami Vivekananda</footer>
       </blockquote>
     </section>
-
     <h2 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700;">
       Featured Books
     </h2>
@@ -22,13 +21,10 @@
         <LoaderComponent />
       </div>
 
-
       <div v-else v-for="book of books" :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
         <div class="book-card h-100" style="max-height: 500px;">
           
             <img :src="book.cover" alt="Book cover" class="img-fluid" />
-
-
             <div class="card-body d-flex flex-column">
               <h5 class="card-title"><a :href="`/books/${book.id}`">{{ book.title }}</a></h5>
               <p class="card-text author">{{ book.author_name }}</p>
@@ -46,7 +42,7 @@
     </div>
   </main>
   <!-- Footer -->
-  <footer-component></footer-component>
+  <footer-component />
 </template>
 
 <script>
