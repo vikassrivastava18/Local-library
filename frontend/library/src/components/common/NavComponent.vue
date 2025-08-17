@@ -14,11 +14,9 @@
         </form>
         <ul class="navbar-nav mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#">Login</a>
+            <a class="nav-link" href="#">Logout</a>
           </li>
-          <li class="nav-item ms-3">
-            <a class="nav-link" href="#">Register</a>
-          </li>
+          
         </ul>
       </div>
     </div>
