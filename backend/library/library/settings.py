@@ -189,3 +189,4 @@ LOGGING = {
 }
 
 
+MEDIA_URL = 'media/'
