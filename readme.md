@@ -1,5 +1,5 @@
 # Tribute to Mozilla tutorial on Django
-![App Screenshot](https://i.ibb.co/wrzgw07Y/Screenshot-2025-07-16-130529.png)
+![App Screenshot](https://i.ibb.co/0R7zYsqw/library.png)
 
 ## Purpose
 
