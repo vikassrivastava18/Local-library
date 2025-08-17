@@ -16,6 +16,7 @@
   </form>
 </template>
 <script>
+import { backendUrl } from '../../config'
 
 export default {
   name: 'LoginComponent',
@@ -37,7 +38,8 @@ export default {
       this.error = ''
       this.success = ''
       try {
-        const response = await fetch('http://127.0.0.1:8000/auth/login/', {
+        const url = backendUrl + 'auth/login/'
+        const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.form)

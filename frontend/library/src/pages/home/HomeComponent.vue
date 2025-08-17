@@ -16,82 +16,98 @@
       Featured Books
     </h2>
     <div class="row g-3 justify-content-center">
-      
+
       <!-- Book 1 -->
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="book-card h-100">
-          <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80"
-            alt="The Great Gatsby" />
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">The Great Gatsby</h5>
-            <p class="card-text author">by F. Scott Fitzgerald</p>
-            <p class="card-text description">
-              A classic novel of the Roaring Twenties, filled with love,
-              ambition, and tragedy.
-            </p>
-            <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
-              View Details
-            </a>
-          </div>
+      <div v-if="loading">
+        <LoaderComponent />
+      </div>
+
+
+      <div v-else v-for="book of books" :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
+        <div class="book-card h-100" style="max-height: 500px;">
+          
+            <img :src="book.cover" alt="Book cover" class="img-fluid" />
+
+
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title"><a :href="`/books/${book.id}`">{{ book.title }}</a></h5>
+              <p class="card-text author">{{ book.author_name }}</p>
+              <p class="card-text description">
+                {{ book.summary }}
+              </p>
+              <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
+                View Details
+              </a>
+            </div>
+    
         </div>
       </div>
 
-      <!-- Book 2 -->
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="book-card h-100">
-          <img src="https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=400&q=80"
-            alt="To Kill a Mockingbird" />
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">To Kill a Mockingbird</h5>
-            <p class="card-text author">by Harper Lee</p>
-            <p class="card-text description">
-              A timeless story of justice and morality in the Deep South.
-            </p>
-            <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
-              View Details
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Book 3 -->
-      <div class="col-sm-6 col-md-4 col-lg-3">
-        <div class="book-card h-100">
-          <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80"
-            alt="1984" />
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title">1984</h5>
-            <p class="card-text author">by George Orwell</p>
-            <p class="card-text description">
-              A dystopian novel exploring surveillance, truth, and freedom.
-            </p>
-            <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
-              View Details
-            </a>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
-
   <!-- Footer -->
   <footer-component></footer-component>
 </template>
 
 <script>
-import FooterComponent from '../components/common/FooterComponent.vue';
-import NavComponent from '../components/common/NavComponent.vue';
+import FooterComponent from '../../components/common/FooterComponent.vue';
+import NavComponent from '../../components/common/NavComponent.vue';
+import LoaderComponent from './LoaderComponent.vue';
+import { backendUrl } from '@/config';
 
 export default {
   name: 'HomeComponent',
   props: {
     msg: String
   },
+  data() {
+    return {
+      books: [],
+      error: '',
+      success: '',
+      loading: true
+    }
+
+  },
   components: {
     NavComponent,
-    FooterComponent
+    FooterComponent,
+    LoaderComponent
+  },
+  methods: {
+    async getBooks() {
+      const url = backendUrl + 'catalog/books/';
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'token ' + localStorage.getItem('auth_token')
+          },
+        })
+        if (response.ok) {
+          const data = await response.json(); // <-- fix here
+          this.books = data;
+          this.loading = false
+
+        } else {
+          const data = await response.json()
+          this.error = data['non_field_errors']
+        }
+      } catch (err) {
+        this.error = 'Network error. Please try again.'
+      }
+
+    }
+  },
+  mounted() {
+    // Lifecycle hook: runs when component is mounted
+    // Get the books from backend to display
+    this.getBooks()
   }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

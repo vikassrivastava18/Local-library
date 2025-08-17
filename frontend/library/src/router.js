@@ -2,20 +2,29 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 // Import your page components
-import HomeComponent from './pages/HomeComponent.vue'
-import LoginComponent from './pages/auth/LoginComponent.vue'
-import RegisterComponent from './pages/auth/RegisterComponent.vue'
-import AuthCommon from './pages/auth/AuthCommon.vue'
+import HomeComponent from './pages/home/HomeComponent.vue'
 
 const routes = [
-    {   path: '/', name: 'Home', component: HomeComponent, meta: { requiresAuth: true } },
+    { path: '/', name: 'Home', component: HomeComponent, meta: { requiresAuth: true } },
     {
         path: '/auth',
-        component: AuthCommon,
+        component: () => import('./pages/auth/AuthCommon.vue'),
         children: [
-            { path: '', name: 'AuthLogin', component: LoginComponent }, // default child
-            { path: 'register', name: 'AuthRegister', component: RegisterComponent }
+            { path: '', 
+                name: 'AuthLogin', 
+                component: () => import('./pages/auth/LoginComponent.vue') 
+            }, // default child
+            { path: 'register', 
+                name: 'AuthRegister', 
+                component: () => import('./pages/auth/RegisterComponent.vue') 
+            }
         ]
+    },
+    {
+        path: '/books/:id',
+        name: 'BookDetail',
+        component: () => import('./pages/books/BookDetailComponent.vue'),
+        meta: { requiresAuth: true }
     }
 ]
 
