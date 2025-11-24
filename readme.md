@@ -1,5 +1,5 @@
 # Tribute to Mozilla tutorial on Django
-![App Screenshot](https://i.ibb.co/wrzgw07Y/Screenshot-2025-07-16-130529.png)
+![App Screenshot](https://i.ibb.co/0R7zYsqw/library.png)
 
 ## Purpose
 
@@ -10,13 +10,10 @@ Build an application for a local library where people can find their favorite bo
 - **User:**  
   - Check the availability of books in the library.
   - Borrow books for a maximum duration.
-  - Like and add reviews to books, helping with personalized recommendations.
-  - Search for books by title or author.
+  - Search for books by title.
 
 - **Librarian:**  
   - Manage book instances.
-  - Approve user accounts after verifying ID documents.
-  - Blacklist users for not returning books or consistently damaging loaned books.
 
 ## Technology Stack
 
