@@ -5,7 +5,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from .models import Book, BookInstance, Author
-from .serializers import BookSerializer, AuthorSerializer, BookInstanceSerializer
+from rest_framework.permissions import IsAuthenticated
+from .serializers import (BookSerializer,
+                          AuthorSerializer,
+                          BookInstanceSerializer,
+                          BookWithInstancesSerializer,
+                          BorrowBookInstanceSerializer)
 
 
 class IndexView(APIView):
@@ -25,7 +30,19 @@ class IndexView(APIView):
         return Response(data)
 
 
+class SearchBookView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, book_name):
+        books = Book.objects.filter(title__icontains=book_name)
+        data = {
+            "books": list(books.values())
+        }
+        return Response(data)
+
+
 class BookListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = BookSerializer
     paginate_by = 10
 
@@ -34,22 +51,26 @@ class BookListView(generics.ListAPIView):
     
 
 class BookDetailView(generics.RetrieveAPIView):
-    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticated]
+    serializer_class = BookWithInstancesSerializer
     queryset = Book.objects.all()
     
 
 class AuthorListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = AuthorSerializer
     queryset = Author.objects.all()
     paginate_by = 10
     
 
 class AuthorDetailView(generics.RetrieveAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = AuthorSerializer
     queryset = Author.objects.all()
     
 
 class LoanedBooksListView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = BookInstanceSerializer
     paginate_by = 10
 
@@ -60,8 +81,21 @@ class LoanedBooksListView(generics.ListAPIView):
                                 .order_by('due_back')
         )
 
+class BorrowBookView(generics.UpdateAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BorrowBookInstanceSerializer
+    queryset = BookInstance.objects.all()
 
-
+    def update(self, request, *args, **kwargs):
+        # If the book is not available for loan, send error in response.
+        print("Kwargs: ", kwargs)
+        book_instance = BookInstance.objects.get(id=kwargs['pk'])
+        if book_instance.status != 'a':
+            return Response(
+                {"error": "Sorry, book is not available for loan right now."},
+                status=400
+            )
+        return super().update(request, *args, **kwargs)
 
     
     
