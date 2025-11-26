@@ -9,27 +9,25 @@ from .models import UserProfile
 
 
 class CanMarkReturnedPermission(BasePermission):
-    def has_permission(self, request):
+    def has_permission(self, request, view):
         return request.user.has_perm('catalog.can_mark_returned')
-    
-class StaffBaseView(generics.GenericAPIView):
-    pass
-    # permission_classes = [CanMarkReturnedPermission]
 
 
-class MarkBookAsReturnedView(StaffBaseView, generics.UpdateAPIView):
-    # permission_classes = [CanMarkReturnedPermission]
+class MarkBookAsReturnedView(generics.UpdateAPIView):
     serializer_class = BookInstanceSerializer
     queryset = BookInstance.objects.all()
+    permission_classes = [CanMarkReturnedPermission]
 
 
-class BoorowedBooksView(StaffBaseView, generics.ListAPIView):
-    # permission_classes = [CanMarkReturnedPermission]
+class BoorowedBooksView(generics.ListAPIView):
     serializer_class = BookInstanceSerializer
     queryset = BookInstance.objects.all()
+    permission_classes = [CanMarkReturnedPermission]
 
 
-class ModifyUserAccountView(StaffBaseView, generics.UpdateAPIView):
-    # permission_classes = [CanMarkReturnedPermission]
+class ModifyUserAccountView(generics.UpdateAPIView):
     serializer_class = UserProfileSerializer
     queryset = UserProfile.objects.all()
+    permission_classes = [CanMarkReturnedPermission]
+
+    
