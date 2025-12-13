@@ -1,4 +1,9 @@
 from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from django.conf import settings
+from datetime import timedelta
+from django.utils import timezone
 from .models import Book, Author, BookInstance
 
 
@@ -47,9 +52,22 @@ class BorrowBookInstanceSerializer(serializers.ModelSerializer):
         model = BookInstance
         fields = []
 
+    def validate(self, attrs):
+        """Validate before update is called"""
+        instance = self.instance
+        if instance.status != 'a':
+            raise ValidationError(
+                {"error": "Sorry, the book is not available for loan right now."}
+            )
+        return attrs
+
     def update(self, instance, validated_data):
-        # Ignore validated_data, just update status
+        user = self.context['request'].user
         instance.status = 'o'  # Assuming 'o' is the code for "on loan"
+        borrow_till = settings.BORROW_DAYS_COUNT
+        due_date = timezone.now().date() + timedelta(days=borrow_till)
+        instance.due_back = due_date
+        instance.borrower = user    # Assign current user as borrower
         instance.save()
         return instance
     

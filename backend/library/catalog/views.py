@@ -1,15 +1,11 @@
-from django.db.models import F
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Book, BookInstance, Author
-from rest_framework.permissions import IsAuthenticated
-from .serializers import (BookSerializer,
-                          AuthorSerializer,
-                          BookInstanceSerializer,
-                          BookWithInstancesSerializer,
+from .serializers import (BookSerializer,AuthorSerializer,
+                          BookInstanceSerializer,BookWithInstancesSerializer,
                           BorrowBookInstanceSerializer)
 
 
@@ -75,27 +71,17 @@ class LoanedBooksListView(generics.ListAPIView):
     paginate_by = 10
 
     def get_queryset(self):
-        return (
-            BookInstance.objects.filter(borrower=self.request.user)
-                                .filter(status__exact='o')
-                                .order_by('due_back')
-        )
+        return (BookInstance.objects.filter(borrower=self.request.user)
+                .filter(status__exact='o')
+                .order_by('due_back'))
+
 
 class BorrowBookView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BorrowBookInstanceSerializer
     queryset = BookInstance.objects.all()
 
-    def update(self, request, *args, **kwargs):
-        # If the book is not available for loan, send error in response.
-        print("Kwargs: ", kwargs)
-        book_instance = BookInstance.objects.get(id=kwargs['pk'])
-        if book_instance.status != 'a':
-            return Response(
-                {"error": "Sorry, book is not available for loan right now."},
-                status=400
-            )
-        return super().update(request, *args, **kwargs)
+
 
     
     
