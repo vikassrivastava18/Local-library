@@ -17,3 +17,17 @@ class UserProfileSerializer(serializers.ModelSerializer):
             
         instance.save()
         return instance
+
+
+class LoadBookSerializer(serializers.Serializer):
+    genre = serializers.CharField()
+
+    ALLOWED_GENRES = {"fiction", "history", "biography", "science", "philosophy"}
+
+    def validate_genre(self, value):
+        value = value.lower()
+        if value not in self.ALLOWED_GENRES:
+            raise serializers.ValidationError(
+                "Genre must be one of: fiction, history, biography"
+            )
+        return value

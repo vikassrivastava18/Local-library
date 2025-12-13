@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Book, BookInstance, Author
-from .serializers import (BookSerializer,AuthorSerializer,
-                          BookInstanceSerializer,BookWithInstancesSerializer,
+from .serializers import (BookSerializer, AuthorSerializer,
+                          BookInstanceSerializer, BookWithInstancesSerializer,
                           BorrowBookInstanceSerializer)
 
 
@@ -43,7 +43,7 @@ class BookListView(generics.ListAPIView):
     paginate_by = 10
 
     def get_queryset(self):
-        return Book.objects.all()[:5]
+        return Book.objects.all()[:4]
     
 
 class BookDetailView(generics.RetrieveAPIView):
