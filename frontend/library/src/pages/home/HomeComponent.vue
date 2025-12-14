@@ -2,16 +2,18 @@
   <!-- Navbar -->
   <nav-component />
   <!-- Main Content -->
-  <main class="container my-5">
+  <main class="container my-2">
     <!-- Quote Section -->
-    <section class="mb-5 text-center px-3">
-      <blockquote class="fs-4 fst-italic text-secondary mx-auto"
-        style="max-width: 700px; border-left: 4px solid var(--accent-color); padding-left: 1rem;">
+    <section class="mb-3 text-center px-3">
+      <blockquote class="fs-4 fst-italic text-secondary mx-auto">
         “I will learn whatever is great, wherever I find it.”
-        <footer class="blockquote-footer mt-2">Swami Vivekananda</footer>
+        <footer class="blockquote-footer mt-0">Swami Vivekananda</footer>
       </blockquote>
     </section>
-    <h2 class="text-center mb-4" style="color: var(--primary-color); font-weight: 700;">
+    
+    <GenreListComponent />
+
+    <h2 class="text-center mb-4" id="homeHeader">
       Featured Books
     </h2>
     <div class="row g-3 justify-content-center">
@@ -22,24 +24,26 @@
       </div>
 
       <div v-else v-for="book of books" :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
-        <div class="book-card h-100" style="max-height: 500px;">
-          
-            <img :src="book.cover" alt="Book cover" class="img-fluid" />
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title"><a :href="`/books/${book.id}`">{{ book.title }}</a></h5>
-              <p class="card-text author">{{ book.author_name }}</p>
-              <p class="card-text description">
-                {{ book.summary }}
-              </p>
-              <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
-                View Details
-              </a>
-            </div>
-    
+        <div class="book-card h-100" style="max-height: 400px;">
+
+          <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
+          <img v-else :src="book.cover_url" alt="Book cover" class="img-fluid" />
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title"><a :href="`/books/${book.id}`">{{ book.title }}</a></h5>
+            <p class="card-text author">{{ book.author_name }}</p>
+            <p class="card-text description">
+              {{ book.summary.split(' ').slice(0, 15).join(' ') }}{{ book.summary.split(' ').length > 15 ? '...' : '' }}
+            </p>
+            <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
+              View Details
+            </a>
+          </div>
+
         </div>
       </div>
 
     </div>
+
   </main>
   <!-- Footer -->
   <footer-component />
@@ -48,8 +52,9 @@
 <script>
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
-import LoaderComponent from './LoaderComponent.vue';
+import LoaderComponent from '../../components/common/LoaderComponent.vue';
 import { backendUrl } from '@/config';
+import GenreListComponent from './components/GenreListComponent.vue';
 
 export default {
   name: 'HomeComponent',
@@ -68,7 +73,8 @@ export default {
   components: {
     NavComponent,
     FooterComponent,
-    LoaderComponent
+    LoaderComponent,
+    GenreListComponent
   },
   methods: {
     async getBooks() {
@@ -85,7 +91,6 @@ export default {
         if (response.ok) {
           const data = await response.json(); // <-- fix here
           this.books = data;
-          this.loading = false
 
         } else {
           const data = await response.json()
@@ -93,6 +98,8 @@ export default {
         }
       } catch (err) {
         this.error = 'Network error. Please try again.'
+      } finally {
+        this.loading = false
       }
 
     }
@@ -120,6 +127,11 @@ body {
   background-color: var(--light-gray);
   color: var(--text-color);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.homeHeader {
+  color: var(--primary-color);
+  font-weight: 700;
 }
 
 /* Navbar */
@@ -185,7 +197,7 @@ body {
 }
 
 .book-card img {
-  height: 250px;
+  height: 200px;
   object-fit: cover;
   border-bottom: 1px solid #eee;
 }
@@ -216,26 +228,12 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Footer */
-footer {
-  background-color: var(--primary-color);
-  color: #bdc3c7;
-  padding: 1rem 0;
-  text-align: center;
-  font-size: 0.9rem;
-  margin-top: 4rem;
-  user-select: none;
+blockquote {
+  max-width: 700px;
+  border-left: 4px solid var(--accent-color);
+  padding-left: 1rem;
 }
 
-footer a {
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: 600;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
 
 /* Responsive adjustments */
 @media (max-width: 576px) {
