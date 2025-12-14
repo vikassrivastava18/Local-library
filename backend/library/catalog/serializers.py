@@ -4,7 +4,10 @@ from rest_framework.exceptions import ValidationError
 from django.conf import settings
 from datetime import timedelta
 from django.utils import timezone
+from django.db import transaction
+
 from .models import Book, Author, BookInstance
+from staff.models import BookInstanceHistory
 
 
 class BookSerializer(serializers.ModelSerializer):
@@ -62,14 +65,19 @@ class BorrowBookInstanceSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance, validated_data):
-        user = self.context['request'].user # The current user
-        instance.status = 'o'  # Assuming 'o' is the code for "on loan"
-        borrow_till = settings.BORROW_DAYS_COUNT
-        due_date = timezone.now().date() + timedelta(days=borrow_till)
-        instance.due_back = due_date
-        instance.borrower = user    # Assign current user as borrower
-        instance.save()
-        return instance
+        with transaction.atomic():
+            user = self.context['request'].user # The current user
+            instance.status = 'o'  # Assuming 'o' is the code for "on loan"
+            borrow_till = settings.BORROW_DAYS_COUNT
+            due_date = timezone.now().date() + timedelta(days=borrow_till)
+            instance.due_back = due_date
+            instance.borrower = user    # Assign current user as borrower
+            instance.save()
+
+            # Save history of book instance
+            BookInstanceHistory.objects.create(book_instance=instance.id, status='o',
+                                               user=user)
+            return instance
     
 
 class BookWithInstancesSerializer(serializers.ModelSerializer):

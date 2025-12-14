@@ -10,6 +10,7 @@ from .serializers import (BookSerializer, AuthorSerializer,
                           BookInstanceSerializer, BookWithInstancesSerializer,
                           BorrowBookInstanceSerializer)
 
+
 logger = logging.getLogger(__name__)
 
 class IndexView(APIView):
@@ -93,6 +94,28 @@ class BorrowBookView(generics.UpdateAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BorrowBookInstanceSerializer
     queryset = BookInstance.objects.all()
+
+
+class UserBookHistory(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        books_inst = BookInstance.objects.filter(borrower=request.user,
+                                                 status='o')
+        result = []
+
+        for inst in books_inst:
+            book_name, cover = inst.book.title, inst.book.cover_url
+
+            result.append({"id": inst.id, "book_name": book_name,
+                           "cover": cover, "due_back": inst.due_back})
+
+        return Response({
+            "user": request.user.username,
+            "books": result
+        })
+
 
 
 

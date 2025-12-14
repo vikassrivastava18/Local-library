@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from catalog.models import Book
+
+from catalog.models import BookInstance
+
+
 # Create your models here.
 
 class UserProfile(models.Model):
@@ -20,7 +24,7 @@ class UserProfile(models.Model):
 
 
 class BookInstanceHistory(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book_instance = models.CharField(max_length=64)
     status = models.CharField(max_length=1)
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)

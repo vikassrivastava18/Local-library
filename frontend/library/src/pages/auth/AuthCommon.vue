@@ -1,6 +1,6 @@
 <template>
   <div id="registerBackground">
-    <div class="container mb-5">
+    <div class="container mb-5 mt-4">
       <div class="row justify-content-center">
         <div class="col-md-6">
           <div class="card shadow">
@@ -37,7 +37,9 @@ export default {
 <style scoped>
 
   .card {
-    margin-top: 50px;
+    margin-top: 100px;
     opacity: 0.98;
+    padding: 10px
   }
+
 </style>

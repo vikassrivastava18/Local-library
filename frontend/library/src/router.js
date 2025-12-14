@@ -3,10 +3,12 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 // Import your page components
 import HomeComponent from './pages/home/HomeComponent.vue'
+import ProfileComponent from './pages/user/ProfileComponent.vue'
 
 const routes = [
     // Router for home page
     { path: '/', name: 'Home', component: HomeComponent, meta: { requiresAuth: true } },
+    { path: '/profile', name: 'Profile', component: ProfileComponent, meta: { requiresAuth: true } },
     // Router for authntication
     { path: '/auth',
         component: () => import('./pages/auth/AuthCommon.vue'),
@@ -26,7 +28,9 @@ const routes = [
      name: 'BookDetail',
      component: () => import('./pages/books/BookDetailComponent.vue'),
      meta: { requiresAuth: true }
-    }
+    },
+    // Router for User profile page
+    // { path: '/', name: 'Home', component: HomeComponent, meta: { requiresAuth: true } },
 ]
 
 const router = createRouter({
