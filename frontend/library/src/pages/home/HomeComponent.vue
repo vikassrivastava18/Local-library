@@ -10,11 +10,33 @@
         <footer class="blockquote-footer mt-0">Swami Vivekananda</footer>
       </blockquote>
     </section>
-    
-    <GenreListComponent />
+
+    <!-- <GenreListComponent /> -->
+    <section class="genres text-center">
+      <button type="button" class="btn btn-primary px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Science')">
+        Science
+      </button>
+
+      <button type="button" class="btn btn-success px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('History')">
+        History
+      </button>
+
+      <button type="button" class="btn btn-warning px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Philosophy')">
+        Philosophy
+      </button>
+
+      <button type="button" class="btn btn-info px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Biography')">
+        Biography
+      </button>
+
+      <button type="button" class="btn btn-danger px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Fiction')">
+        Fiction
+      </button>
+    </section>
+
 
     <h2 class="text-center mb-4" id="homeHeader">
-      Featured Books
+      {{activeGenre}} Books
     </h2>
     <div class="row g-3 justify-content-center">
 
@@ -29,14 +51,14 @@
           <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
           <img v-else :src="book.cover_url" alt="Book cover" class="img-fluid" />
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title"><a :href="`/books/${book.id}`">{{ book.title }}</a></h5>
+            <h5 class="card-title">
+              <router-link :to="`/books/${book.id}`">{{ book.title }}</router-link>
+            </h5>
             <p class="card-text author">{{ book.author_name }}</p>
             <p class="card-text description">
-              {{ book.summary.split(' ').slice(0, 15).join(' ') }}{{ book.summary.split(' ').length > 15 ? '...' : '' }}
+              {{ shortSummary(book.summary) }}
             </p>
-            <a href="#" class="btn btn-primary mt-auto" style="background-color: var(--accent-color); border: none;">
-              View Details
-            </a>
+            
           </div>
 
         </div>
@@ -50,23 +72,25 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
+
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
-import { backendUrl } from '@/config';
-import GenreListComponent from './components/GenreListComponent.vue';
+// import GenreListComponent from './components/GenreListComponent.vue';
 
 export default {
   name: 'HomeComponent',
-  props: {
-    msg: String
+  computed: {
+    ...mapGetters("books", ["books", "isLoading", "activeGenre"]),
+    loading() {
+      return this.isLoading;
+    }
   },
   data() {
     return {
-      books: [],
+      genres: ["fiction", "history", "science", "biography"],
       error: '',
-      success: '',
-      loading: true
     }
 
   },
@@ -74,40 +98,27 @@ export default {
     NavComponent,
     FooterComponent,
     LoaderComponent,
-    GenreListComponent
+    // GenreListComponent
   },
   methods: {
-    async getBooks() {
-      const url = backendUrl + 'catalog/books/';
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      try {
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + localStorage.getItem('auth_token')
-          },
-        })
-        if (response.ok) {
-          const data = await response.json(); // <-- fix here
-          this.books = data;
 
-        } else {
-          const data = await response.json()
-          this.error = data['non_field_errors']
-        }
-      } catch (err) {
-        this.error = 'Network error. Please try again.'
-      } finally {
-        this.loading = false
-      }
-
+    ...mapActions("books", ["fetchBooksByGenre"]),
+    loadBooks(genre) {
+      this.fetchBooksByGenre(genre);
+    },
+    shortSummary(text, words = 15) {
+      if (!text) return "";
+      const parts = text.split(" ");
+      return parts.length > words
+        ? parts.slice(0, words).join(" ") + "..."
+        : text;
     }
   },
-  mounted() {
-    // Lifecycle hook: runs when component is mounted
-    // Get the books from backend to display
-    this.getBooks()
+  created() {
+    if (!this.$store.state.books.activeGenre) {
+      console.log("Bug")
+      this.fetchBooksByGenre("Feature");
+    }
   }
 }
 

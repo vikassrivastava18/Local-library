@@ -61,10 +61,6 @@
             </div>
         </div>
 
-        <!-- Button trigger modal -->
-        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Open Modal
-        </button> -->
 
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -137,6 +133,8 @@ export default {
                 if (response.ok) {
                     const data = await response.json(); // <-- fix here
                     this.book = data;
+                    console.log("book: ", data);
+                    
                     this.booksAvailable = this.book.instances.filter(inst => inst.status === 'a').length
 
                 } else {
@@ -144,7 +142,7 @@ export default {
                     this.error = data['non_field_errors']
                 }
             } catch (err) {
-                this.error = 'Network error. Please try again.'
+                this.error = `Error occured: ${err}`
             } finally {
                 this.loading = false
             }
@@ -176,8 +174,6 @@ export default {
                 this.loading = false
                 // Close the modal
                 document.querySelector(".btn-close").click()
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                this.$router.go(0);
             }
         }
     },
