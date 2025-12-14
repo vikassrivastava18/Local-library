@@ -121,7 +121,6 @@ class BookInstance(models.Model):
         ordering = ['due_back']
         permissions = (('can_mark_returned', 'Set book as returned'),)
 
-
     @property
     def is_overdue(self):
         return self.due_back and self.due_back < date.today()
