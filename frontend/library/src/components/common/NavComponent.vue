@@ -1,7 +1,11 @@
 <template>
   <nav class="navbar navbar-expand-lg shadow" style="padding: 4px; background-color: rgb(93 186 215);;">
     <div class="container">
-      <a class="navbar-brand fs-4 ms-0" href="/" style="color: black;">Local Library</a>
+      <router-link :to="`/`"
+        class="navbar-brand fs-4 ms-0"
+        style="color: black;">Local Library
+      </router-link>
+      
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

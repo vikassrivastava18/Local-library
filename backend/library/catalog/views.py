@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,6 +10,7 @@ from .serializers import (BookSerializer, AuthorSerializer,
                           BookInstanceSerializer, BookWithInstancesSerializer,
                           BorrowBookInstanceSerializer)
 
+logger = logging.getLogger(__name__)
 
 class IndexView(APIView):
     permission_classes = [AllowAny]
@@ -40,17 +43,27 @@ class SearchBookView(APIView):
 class BookListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BookSerializer
-    paginate_by = 10
+    paginate_by = None
 
     def get_queryset(self):
-        return Book.objects.all()[:4]
-    
+        genre_name = self.kwargs.get("genre")
+        queryset = Book.objects.all()
+
+        if genre_name:
+            if genre_name.lower() == 'feature':
+                return Book.objects.all()[:4]
+            queryset = queryset.filter(
+                genre__name__iexact=genre_name
+            ).distinct()
+
+        return queryset[:]
+
 
 class BookDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
     serializer_class = BookWithInstancesSerializer
     queryset = Book.objects.all()
-    
+
 
 class AuthorListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]

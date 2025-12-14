@@ -13,24 +13,16 @@
 
     <!-- <GenreListComponent /> -->
     <section class="genres text-center">
-      <button type="button" class="btn btn-primary px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Science')">
-        Science
-      </button>
-
-      <button type="button" class="btn btn-success px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('History')">
-        History
-      </button>
-
-      <button type="button" class="btn btn-warning px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Philosophy')">
-        Philosophy
-      </button>
-
-      <button type="button" class="btn btn-info px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Biography')">
-        Biography
-      </button>
-
-      <button type="button" class="btn btn-danger px-4 py-2 rounded-pill m-2" @click="fetchBooksByGenre('Fiction')">
-        Fiction
+      <button 
+        v-for="genre in genres" 
+        :key="genre"
+        type="button" 
+        class="btn px-4 py-2 rounded-pill m-2"
+        :class="[`btn-${getButtonColor(genre)}`, 
+                {'border border-3 border-dark': genre === activeGenre}]"        
+        @click="fetchBooksByGenre(genre)"
+        >
+        {{ genre }}
       </button>
     </section>
 
@@ -45,11 +37,14 @@
         <LoaderComponent />
       </div>
 
-      <div v-else v-for="book of books" :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
+      <div v-else v-for="book of books" 
+        :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
         <div class="book-card h-100" style="max-height: 400px;">
 
           <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
-          <img v-else :src="book.cover_url" alt="Book cover" class="img-fluid" />
+          <img v-else-if="book.cover_url" :src="book.cover_url" alt="Book cover" class="img-fluid" />
+          <img v-else src="@/assets/book.jpg" alt="Book cover" class="img-fluid" />
+
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">
               <router-link :to="`/books/${book.id}`">{{ book.title }}</router-link>
@@ -60,7 +55,6 @@
             </p>
             
           </div>
-
         </div>
       </div>
 
@@ -89,7 +83,7 @@ export default {
   },
   data() {
     return {
-      genres: ["fiction", "history", "science", "biography"],
+      genres: ["Fiction", "History", "Science", "Biography", "Philosophy"],
       error: '',
     }
 
@@ -105,6 +99,17 @@ export default {
     ...mapActions("books", ["fetchBooksByGenre"]),
     loadBooks(genre) {
       this.fetchBooksByGenre(genre);
+    },
+    
+    getButtonColor(genre) {
+      const genreColors = {
+        Fiction: 'primary',
+        History: 'success',
+        Science: 'info',
+        Biography: 'warning',
+        Philosophy: 'danger',
+      };
+      return genreColors[genre] || 'secondary';
     },
     shortSummary(text, words = 15) {
       if (!text) return "";

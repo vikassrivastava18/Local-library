@@ -62,7 +62,7 @@ class BorrowBookInstanceSerializer(serializers.ModelSerializer):
         return attrs
 
     def update(self, instance, validated_data):
-        user = self.context['request'].user
+        user = self.context['request'].user # The current user
         instance.status = 'o'  # Assuming 'o' is the code for "on loan"
         borrow_till = settings.BORROW_DAYS_COUNT
         due_date = timezone.now().date() + timedelta(days=borrow_till)

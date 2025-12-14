@@ -72,7 +72,7 @@
                     </div>
 
                     <div class="modal-body">
-                        You agree to return this book in 2 months in good shape.
+                        You agree to return this book by {{due_date}} in good shape.
                     </div>
 
                     <div class="modal-footer">
@@ -108,7 +108,8 @@ export default {
             loading: true,
             booksAvailable: 0,
             success: '',
-            error: ''
+            error: '',
+            due_date: new Date(new Date().setMonth(new Date().getMonth() + 2)).toISOString().split('T')[0],
         }
     },
     components: {
@@ -162,7 +163,7 @@ export default {
                 })
                 if (response.ok) {
                     console.log('Sucessfully loaned');
-                    this.success = 'Book has been assigned to you on loan!';
+                    this.success = 'Book has been assigned to you on loan, please collect from library by tomorrow!';
 
                 } else {
                     const data = await response.json()

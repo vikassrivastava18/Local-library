@@ -153,48 +153,40 @@ LOGIN_REDIRECT_URL = '/api/books/'
 
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    
-    'formatters': {
-        'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
         },
     },
-
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'simple',
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(str(BASE_DIR), "django.log"),
+            "formatter": "verbose",
         },
-        'file': {
-            'level': 'INFO',
-            'class': 'logging.FileHandler',
-            'filename': 'django.log',
-            'formatter': 'verbose',
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
     },
-
-    'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': True,
+    "loggers": {
+        # ensure your views logger is captured
+        "library.catalog.views": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
+            "propagate": False,
         },
-        'api': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': False,
+        # root logger to catch other logs
+        "": {
+            "handlers": ["file", "console"],
+            "level": "INFO",
         },
-    }
+    },
 }
-
-
 MEDIA_URL = 'media/'
 
 BORROW_DAYS_COUNT = 60
