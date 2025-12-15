@@ -51,7 +51,7 @@ class BookListView(generics.ListAPIView):
         queryset = Book.objects.all()
 
         if genre_name:
-            if genre_name.lower() == 'feature':
+            if genre_name.lower() == 'featured':
                 return Book.objects.all()[:4]
             queryset = queryset.filter(
                 genre__name__iexact=genre_name

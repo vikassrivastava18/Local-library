@@ -4,7 +4,7 @@
   <!-- Main Content -->
   <main class="container my-2">
     <!-- Quote Section -->
-    <section class="mb-2 text-center px-3 py-2">
+    <section class="mb-1 text-center px-3 py-2">
       <blockquote class="fs-4 fst-italic text-secondary mx-auto">
         “I will learn whatever is great, wherever I find it.”
         <footer class="blockquote-footer mt-0">Swami Vivekananda</footer>
@@ -122,7 +122,7 @@ export default {
   created() {
     if (!this.$store.state.books.activeGenre) {
       console.log("Bug")
-      this.fetchBooksByGenre("Feature");
+      this.fetchBooksByGenre("Featured");
     }
   }
 }

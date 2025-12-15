@@ -41,7 +41,7 @@
 
         <!-- Profile and logout -->
         <ul class="navbar-nav mb-2 ms-4 mb-lg-0">
-          <li class="nav-item me-2">
+          <li class="nav-item">
             <router-link :to="`/profile`" class="nav-link">
               <img src="@/assets/profile_new.png" alt="Profile" class="profile-img" />
             </router-link>
