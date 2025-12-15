@@ -15,7 +15,9 @@
                     <div class="col-md-3 d-flex p-2">
                         <img v-if="book.cover" :src="book.cover" class="img-fluid rounded-start" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
-                        <img v-else :src="book.cover_url" class="img-fluid rounded-start" alt="Book Cover"
+                        <img v-else-if="book.cover_url" :src="book.cover_url" class="img-fluid rounded-start" alt="Book Cover"
+                            style="max-height: 300px; object-fit: contain;">
+                        <img v-else src="@/assets/book.jpg" class="img-fluid rounded-start" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
 
                     </div>
@@ -29,6 +31,10 @@
                                 data-bs-target="#exampleModal"
                                 style="float: right;">Borrow
                             </button>
+                            <span v-else
+                                class="text-primary"
+                                style="float: right; font-weight: 500;">Sorry, the book is not available currently.
+                            </span>
 
                         </div>
                         <div class="card-body">

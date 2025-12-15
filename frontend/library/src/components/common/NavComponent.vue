@@ -1,6 +1,7 @@
 <template>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg shadow navbar-custom">
+  <nav class="navbar-custom navbar navbar-expand-lg shadow"
+    style="background-color: rgb(93, 186, 215);">
     <div class="container">
       <!-- Brand / Home link -->
       <router-link :to="`/`" class="navbar-brand fs-4 ms-0 brand">

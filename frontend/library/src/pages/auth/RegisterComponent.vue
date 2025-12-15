@@ -1,5 +1,8 @@
 <template>
   <form @submit.prevent="register">
+    <div v-if="success" class="text-primary mt-1">
+      <div>{{ success }}</div>
+    </div>
     <div class="mb-3">
       <label for="username" class="form-label">Username</label>
       <input type="text" v-model="form.username" class="form-control" id="username" required>
@@ -57,7 +60,7 @@ export default {
           body: JSON.stringify(this.form)
         })
         if (response.ok) {
-          this.success = 'Registration successful!'
+          this.success = 'Registration successful, login to continue.'
           this.errors = {}
         } else {
           const data = await response.json()
