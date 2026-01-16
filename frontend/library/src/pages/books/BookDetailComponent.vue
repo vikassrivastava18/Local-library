@@ -117,6 +117,12 @@ export default {
             due_date: new Date(new Date().setMonth(new Date().getMonth() + 2)).toISOString().split('T')[0],
         }
     },
+    watch: {
+        '$route.params.id': function() {
+        // Trigger reload logic in BookDetail component
+        this.$router.go(0); // Full page reload
+        }
+    },
     components: {
         NavComponent,
         FooterComponent,
@@ -129,24 +135,16 @@ export default {
             const url = `${backendUrl}catalog/books/${id}`;
             await new Promise(resolve => setTimeout(resolve, 500));
             try {
-                const response = await fetch(url, {
-                    method: 'GET',
+                const response = await this.$axios.get(url, {
                     headers: {
-                        'Content-Type': 'application/json',
                         'Authorization': 'token ' + localStorage.getItem('auth_token')
                     },
                 })
-                if (response.ok) {
-                    const data = await response.json(); // <-- fix here
-                    this.book = data;
-                    console.log("book: ", data);
-                    
-                    this.booksAvailable = this.book.instances.filter(inst => inst.status === 'a').length
+                this.book = response.data;
+                console.log("book: ", response.data);
+                
+                this.booksAvailable = this.book.instances.filter(inst => inst.status === 'a').length
 
-                } else {
-                    const data = await response.json()
-                    this.error = data['non_field_errors']
-                }
             } catch (err) {
                 this.error = `Error occured: ${err}`
             } finally {

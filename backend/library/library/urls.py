@@ -20,11 +20,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path('catalog/', include('catalog.urls')),
-    path('staff/', include('staff.urls')),
-    path('auth/', include('auths.urls'))
+    path('api/admin/', admin.site.urls),
+    path('api/api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api/catalog/', include('catalog.urls')),
+    path('api/staff/', include('staff.urls')),
+    path('api/auth/', include('auths.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

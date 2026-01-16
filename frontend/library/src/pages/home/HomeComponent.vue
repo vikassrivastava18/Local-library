@@ -11,7 +11,6 @@
       </blockquote>
     </section>
 
-    <!-- <GenreListComponent /> -->
     <section class="genres text-center">
       <button 
         v-for="genre in genres" 
@@ -71,7 +70,7 @@ import { mapGetters, mapActions } from "vuex";
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
-// import GenreListComponent from './components/GenreListComponent.vue';
+
 
 export default {
   name: 'HomeComponent',

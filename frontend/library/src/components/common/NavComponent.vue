@@ -8,7 +8,8 @@
         Local Library
       </router-link>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      <button class="navbar-toggler" type="button" 
+        data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -98,6 +99,7 @@ export default {
 
     // Performs search when user has typed >= 4 characters
     async search() {
+      
       if (this.searchBook.length >= 4) {
         const url = `${backendUrl}catalog/search-book/${this.searchBook}`;
         try {

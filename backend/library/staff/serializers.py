@@ -1,6 +1,8 @@
+
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+
 from .models import UserProfile
+
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -31,3 +33,6 @@ class LoadBookSerializer(serializers.Serializer):
                 "Genre must be one of: fiction, history, biography"
             )
         return value
+
+
+

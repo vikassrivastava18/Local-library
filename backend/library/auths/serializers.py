@@ -35,10 +35,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Email already exists.")
         return value
 
-    def validate_password(self, value):
-        if len(value or "") < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters long.")
-        return value
 
     def create(self, validated_data):
         # let DB unique constraints still protect you, but by now we’ve validated
