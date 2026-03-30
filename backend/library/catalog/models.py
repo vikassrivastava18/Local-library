@@ -128,3 +128,12 @@ class BookInstance(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f'{self.id} ({self.book.title})'
+
+
+class LibraryInfo(models.Model):
+    """Model to store information regarding the library, like location, timiongs, etc."""
+    category = models.CharField(max_length=256)
+    information = models.CharField(max_length=1024)
+
+    def __str__(self) -> str:
+        return self.category
