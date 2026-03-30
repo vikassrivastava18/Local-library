@@ -41,7 +41,6 @@
             </div>
         </div>
 
-
     </main>
     <!-- Footer -->
     <footer-component />
@@ -87,7 +86,6 @@ export default {
                     this.user = data.user;
                     console.log("books: ", data);
                                         
-
                 } else {
                     const data = await response.json()
                     this.error = data['non_field_errors']

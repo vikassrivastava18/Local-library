@@ -15,6 +15,7 @@
     <button type="submit" class="btn btn-primary w-100">Login</button>
   </form>
 </template>
+
 <script>
 import { backendUrl } from '../../config'
 
@@ -62,6 +63,5 @@ export default {
 </script>
 
 <style>
-
 
 </style>

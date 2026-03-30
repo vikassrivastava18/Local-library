@@ -33,7 +33,6 @@ import { backendUrl } from '../../config'
 export default {
   name: 'RegisterComponent',
   components: {
-
   },
   data() {
     return {

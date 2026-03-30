@@ -51,8 +51,7 @@
             <p class="card-text author">{{ book.author_name }}</p>
             <p class="card-text description">
               {{ shortSummary(book.summary) }}
-            </p>
-            
+            </p>            
           </div>
         </div>
       </div>
@@ -70,7 +69,6 @@ import { mapGetters, mapActions } from "vuex";
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
-
 
 export default {
   name: 'HomeComponent',

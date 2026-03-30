@@ -183,7 +183,6 @@ export default {
     },
     mounted() {
         this.getBookDetails()
-
     }
 }
 </script>
