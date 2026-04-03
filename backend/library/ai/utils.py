@@ -3,9 +3,11 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
+from catalog.models import LibraryInfo
+
+
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
-from catalog.models import LibraryInfo
 
 load_dotenv()
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
@@ -34,10 +36,18 @@ def similarity_search(query):
 
 
 def generate_ai_response(query, context):
+    from datetime import datetime
+
+    today = datetime.now().strftime("%A")
+    time = datetime.now().strftime("%H:%M")
+
     prompt = f"""
         You are a helpful assistant for a library system based in India.
 
         Use the following context to answer the question. 
+
+        Today is: {today}
+        Time is: {time}
 
         Context:
         {context}
@@ -47,7 +57,5 @@ def generate_ai_response(query, context):
 
         Answer:
     """
-    print("Query: ", query)
-    print("Context: ", context)
     response = llm.invoke(prompt)
     return response.content
