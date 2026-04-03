@@ -1,24 +1,30 @@
 <template>
-  
+
   <button class="open-button" @click="openForm()">Chat</button>
 
   <div class="chat-popup" id="myForm">
-    <form action="/action_page.php" class="form-container">
+    <div class="form-container">
       <i class="fa-solid fa-chalkboard-user"></i>
       <h3>Chat with us</h3>
 
-      <label for="msg">Message</label>
-      <textarea placeholder="Type message.." name="msg" required></textarea>
-
-      <button type="submit" class="btn">Send</button>
+      <label for="msg" class="p-2">Message</label>
+      <textarea placeholder="Type message.." name="msg" v-model="query" required></textarea>
+      <div class="container queryResults"><p>Chat results</p></div>
+      <button type="submit" class="btn" @click="submitForm()"
+        :disabled="disableChatBtn">Send</button>
       <button type="button" class="btn cancel" @click="closeForm()">Close</button>
-    </form>
+    </div>
   </div>
   <router-view></router-view>
 </template>
 
-
 <script setup>
+import { backendUrl } from '@/config';
+import { ref } from 'vue';
+
+const url = backendUrl + 'ai/chat';
+const query = ref('');
+const disableChatBtn = ref(false);
 
 function openForm() {
   document.getElementById("myForm").style.display = "block";
@@ -27,10 +33,40 @@ function openForm() {
 function closeForm() {
   document.getElementById("myForm").style.display = "none";
 }
+
+async function submitForm() {
+  console.log("URL: ", url);
+  disableChatBtn.value = true
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + localStorage.getItem('auth_token')
+      },
+      body: JSON.stringify({ query: query.value })
+    })
+    if (response.ok) {
+      const data = await response.json();
+      console.log("Data: ", data);
+      const resultText = data.result;
+      document.querySelector('.queryResults').innerHTML += `<p>${resultText}</p>`;
+      query.value = '';
+
+    } else {
+      const data = await response.json()
+      this.error = data['error']
+    }
+  } catch (err) {
+    this.error = 'Network error. Please try again.'
+  } finally {
+      disableChatBtn.value = false;
+      console.log("Query cycle complete");
+  }
+}
 </script>
 
 <style scoped>
-
 h3 {
   line-height: 0rem;
 }
@@ -57,7 +93,7 @@ h3 {
   bottom: 0;
   right: 15px;
   z-index: 9;
-  
+
 }
 
 /* Add styles to the form container */
@@ -66,7 +102,7 @@ h3 {
   padding: 20px;
   border-radius: 20px;
   background-color: rgb(65, 59, 59);
-  color: #777;
+  color: #ede7e7;
 }
 
 /* Full-width textarea */
@@ -78,7 +114,7 @@ h3 {
   border-radius: 20px;
   background: #ddd;
   resize: none;
-  min-height: 200px;
+  min-height: 40px;
   color: #777;
 }
 
@@ -110,5 +146,10 @@ h3 {
 .form-container .btn:hover,
 .open-button:hover {
   opacity: 0.8;
+}
+
+.queryResults {
+  max-height: 400px;
+  overflow-y: scroll;
 }
 </style>

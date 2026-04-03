@@ -170,53 +170,6 @@ class CreateBookInstances(APIView):
 
 
 
-# class LoadBookView(APIView):
-#     permission_classes = [CanMarkReturnedPermission]
-#
-#     def post(self, request):
-#         serializer = LoadBookSerializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#
-#         genre_name = serializer.validated_data["genre"]
-#         genre = get_object_or_404(Genre, name__iexact=genre_name)
-#
-#         try:
-#             books_data = load_books_data(genre_name)
-#         except FileNotFoundError as e:
-#             return Response(
-#                 {"error": str(e)},
-#                 status=status.HTTP_404_NOT_FOUND
-#             )
-#
-#         created_count = 0
-#
-#         with transaction.atomic():
-#             for book in books_data.get("items", []):
-#                 book_data = extract_book_info(book)
-#
-#                 try:
-#                     Book.objects.create(
-#                         **book_data,
-#                         genre=genre
-#                     )
-#                     created_count += 1
-#                 except IntegrityError:
-#                     logger.info(
-#                         "Duplicate ISBN skipped: %s",
-#                         book_data["isbn"]
-#                     )
-#
-#         return Response(
-#             {
-#                 "message": "Books loaded successfully",
-#                 "created": created_count
-#             },
-#             status=status.HTTP_201_CREATED
-#         )
-#
-#
-
-
 
 
 

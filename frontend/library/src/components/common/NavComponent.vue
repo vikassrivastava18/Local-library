@@ -5,7 +5,7 @@
     <div class="container">
       <!-- Brand / Home link -->
       <router-link :to="`/`" class="navbar-brand fs-4 ms-0 brand">
-        Local Library
+        Saraswati Public Library
       </router-link>
 
       <button class="navbar-toggler" type="button" 

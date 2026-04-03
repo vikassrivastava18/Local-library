@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'catalog',
     'staff',
     'auths',
+    'ai',
     'corsheaders',
 ]
 

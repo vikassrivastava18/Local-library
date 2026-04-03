@@ -13,11 +13,11 @@
             <div class="card shadow">
                 <div v-if="book" class="row g-0">
                     <div class="col-md-3 d-flex p-2">
-                        <img v-if="book.cover" :src="book.cover" class="img-fluid rounded-start" alt="Book Cover"
+                        <img v-if="book.cover" :src="book.cover" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
-                        <img v-else-if="book.cover_url" :src="book.cover_url" class="img-fluid rounded-start" alt="Book Cover"
+                        <img v-else-if="book.cover_url" :src="book.cover_url" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
-                        <img v-else src="@/assets/book.jpg" class="img-fluid rounded-start" alt="Book Cover"
+                        <img v-else src="@/assets/book.jpg" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
 
                     </div>
@@ -29,7 +29,8 @@
                                 type="button"
                                 class="btn btn-primary" data-bs-toggle="modal" 
                                 data-bs-target="#exampleModal"
-                                style="float: right;">Borrow
+                                style="float: right; 
+                                line-height: initial;">Borrow
                             </button>
                             <span v-else
                                 class="text-primary"
@@ -37,18 +38,19 @@
                             </span>
 
                         </div>
+
                         <div class="card-body">
                             <h5 class="card-title">Author: {{ book.author_name }}</h5>
                             <p class="card-text"><strong>Summary:</strong> {{ book.summary }}</p>
                             <p class="card-text"><strong>ISBN:</strong> {{ book.isbn }}</p>
-
-                            <div v-for="copy in book.instances" :key="copy.id" class="mb-3 p-4">
+                            <h5 class="mt-4">Book Instances</h5>
+                            <div v-for="(copy, index) in book.instances" :key="copy.id" class="mb-2 p-2">
                                 <p :class="{
                                     'text-success': copy.status === 'a',
                                     'text-danger': copy.status === 'm',
                                     'text-warning': copy.status !== 'a' && copy.status !== 'm'
                                 }">
-                                    {{ copy.status_display }}
+                                   <b>{{ index + 1 }})</b> &nbsp;{{ copy.status_display }}
                                 </p>
                                 <p v-if="copy.status == 'o'">
                                     <strong>Due to be returned:</strong> {{ copy.due_back }}
@@ -59,6 +61,7 @@
                                 <p class="text-muted">
                                     <strong>Id:</strong> {{ copy.id }}
                                 </p>
+                                
                             </div>
                         </div>
 

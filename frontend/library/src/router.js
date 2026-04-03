@@ -10,6 +10,7 @@ const routes = [
     { path: '/', name: 'Home', component: HomeComponent, meta: { requiresAuth: true } },
     { path: '/profile', name: 'Profile', component: ProfileComponent, meta: { requiresAuth: true } },
     // Router for authntication
+    
     { path: '/auth',
         component: () => import('./pages/auth/AuthCommon.vue'),
         children: [
