@@ -2,6 +2,8 @@ from typing import TypedDict, Optional
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
+from langgraph.types import interrupt
+from langgraph.checkpoint.memory import InMemorySaver
 
 from .utils import generate_ai_response, similarity_search
 
@@ -10,6 +12,7 @@ from django.contrib.auth.models import User
 
 load_dotenv()
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
+checkpointer = InMemorySaver()
 
 class AgentState(TypedDict):
     user_input: str
@@ -40,6 +43,7 @@ def info_tool(state: AgentState):
     response = generate_ai_response(query, context)
 
     state["response"] = response
+    print("Response: ", response)
     return state
 
 
@@ -47,9 +51,14 @@ def complaint_tool(state: AgentState):
     user_input = state["user_input"]
     username = state["username"]
     user = User.objects.get(username=username)
+    answer = interrupt(
+        # This value will be sent to the client
+        # as part of the interrupt information.
+        "Could you please elaborate your problem, tell us when this happened?"
+    )
     # Insert complain in the database 
-    Complain.objects.create(complain=user_input, user=user)
-    state["response"] = "Your complaint has been registered. We will address it soon."
+    Complain.objects.create(complain=answer, user=user)
+    state["response"] = "Sorry for the inconvenience, your complaint has been registered. We will address it soon."
 
     return state
 
@@ -57,7 +66,7 @@ def route_intent(state: AgentState):
     return state["intent"]
 
 
-def graph_builder():
+def graph_builder(checkpointer):
     builder = StateGraph(AgentState)
     builder.add_node("classifier", classify_intent)
     builder.add_node("info", info_tool)
@@ -79,6 +88,10 @@ def graph_builder():
     # End nodes
     builder.add_edge("info", END)
     builder.add_edge("complaint", END)
-
-    graph = builder.compile()
+    graph = builder.compile(checkpointer=checkpointer)
     return graph
+
+
+graph = graph_builder(checkpointer)
+
+    
