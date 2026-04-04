@@ -7,15 +7,14 @@
       <i class="fa-solid fa-chalkboard-user"></i>
       <h3>Chat with us
       </h3>
-      <button type="button" class="close mb-4" style="float: right;" aria-label="Close" 
-        @click="closeForm()">
+      <button type="button" class="close mb-4" id="closeChatBtn" aria-label="Close" @click="closeForm()">
         <span aria-hidden="true">&times;</span>
       </button>
       <label for="msg" class="p-2">Message</label>
       <textarea placeholder="Type message.." name="msg" v-model="query" required></textarea>
+
       <button type="submit" class="btn" @click="submitForm()" :disabled="disableChatBtn">Send</button>
       <div class="container queryResults">
-        <p><b>Chat results</b></p>
       </div>
 
     </div>
@@ -42,6 +41,8 @@ function closeForm() {
 async function submitForm() {
   console.log("URL: ", url);
   disableChatBtn.value = true
+  const threadId = localStorage.getItem("threadId")
+  const interrupt = localStorage.getItem("interrupt")
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -49,13 +50,22 @@ async function submitForm() {
         'Content-Type': 'application/json',
         'Authorization': 'token ' + localStorage.getItem('auth_token')
       },
-      body: JSON.stringify({ query: query.value })
+      body: JSON.stringify({ query: query.value, "thread_id": threadId, "interrupt":  interrupt})
     })
     if (response.ok) {
       const data = await response.json();
       console.log("Data: ", data);
-      const resultText = data.result;
-      document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
+      if (data.interrupt === "") {
+        const resultText = data.result;
+        document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
+      } else {
+        const resultText = data.interrupt;
+        document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
+      }
+      
+      localStorage.setItem("threadId", data.thread_id)
+      if (data.interrupt) localStorage.setItem("interrupt", true) 
+      else localStorage.setItem("interrupt", false) 
       query.value = '';
 
     } else {
@@ -156,5 +166,9 @@ h3 {
   opacity: 0.8;
 }
 
-
+#closeChatBtn {
+  float: right;
+  position: relative;
+  bottom: 15px;
+}
 </style>
