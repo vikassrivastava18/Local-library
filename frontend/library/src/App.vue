@@ -5,14 +5,19 @@
   <div class="chat-popup" id="myForm">
     <div class="form-container">
       <i class="fa-solid fa-chalkboard-user"></i>
-      <h3>Chat with us</h3>
-
+      <h3>Chat with us
+      </h3>
+      <button type="button" class="close mb-4" style="float: right;" aria-label="Close" 
+        @click="closeForm()">
+        <span aria-hidden="true">&times;</span>
+      </button>
       <label for="msg" class="p-2">Message</label>
       <textarea placeholder="Type message.." name="msg" v-model="query" required></textarea>
-      <div class="container queryResults"><p>Chat results</p></div>
-      <button type="submit" class="btn" @click="submitForm()"
-        :disabled="disableChatBtn">Send</button>
-      <button type="button" class="btn cancel" @click="closeForm()">Close</button>
+      <button type="submit" class="btn" @click="submitForm()" :disabled="disableChatBtn">Send</button>
+      <div class="container queryResults">
+        <p><b>Chat results</b></p>
+      </div>
+
     </div>
   </div>
   <router-view></router-view>
@@ -50,7 +55,7 @@ async function submitForm() {
       const data = await response.json();
       console.log("Data: ", data);
       const resultText = data.result;
-      document.querySelector('.queryResults').innerHTML += `<p>${resultText}</p>`;
+      document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
       query.value = '';
 
     } else {
@@ -60,8 +65,8 @@ async function submitForm() {
   } catch (err) {
     this.error = 'Network error. Please try again.'
   } finally {
-      disableChatBtn.value = false;
-      console.log("Query cycle complete");
+    disableChatBtn.value = false;
+    console.log("Query cycle complete");
   }
 }
 </script>
@@ -103,6 +108,9 @@ h3 {
   border-radius: 20px;
   background-color: rgb(65, 59, 59);
   color: #ede7e7;
+  height: 400px;
+  max-height: 400px;
+  overflow: auto;
 }
 
 /* Full-width textarea */
@@ -114,7 +122,7 @@ h3 {
   border-radius: 20px;
   background: #ddd;
   resize: none;
-  min-height: 40px;
+  min-height: 25px;
   color: #777;
 }
 
@@ -148,8 +156,5 @@ h3 {
   opacity: 0.8;
 }
 
-.queryResults {
-  max-height: 400px;
-  overflow-y: scroll;
-}
+
 </style>
