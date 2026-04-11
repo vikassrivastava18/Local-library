@@ -3,7 +3,7 @@
 
 ## Purpose
 
-Build an application for a local library where people can find their favorite books and get them on loan.
+Build an application for a local library where people can find their favorite books and get them on loan. Also they can chat with an AI agent for info like "Is the Library open today?"
 
 ## User Groups
 
