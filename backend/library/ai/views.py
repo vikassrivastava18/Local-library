@@ -14,7 +14,6 @@ class ChatView(APIView):
         query = request.data.get("query")
         thread_id = request.data.get("thread_id")
         interrupt_bool = request.data.get("interrupt")
-        print("Interrupt bool: ", interrupt_bool)
         username = request.user.username
 
         config = {
@@ -24,7 +23,7 @@ class ChatView(APIView):
         }
 
         state = {"user_input": query, "username": username}
-        if interrupt_bool != "false":
+        if interrupt_bool and interrupt_bool != "false":
             command = Command(resume=query)
             result = graph.stream(command, config)
         else:
