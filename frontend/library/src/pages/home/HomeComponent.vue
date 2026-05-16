@@ -16,7 +16,7 @@
         v-for="genre in genres" 
         :key="genre"
         type="button" 
-        class="btn px-4 py-2 rounded-pill m-2"
+        class="btn px-4 py-2 rounded-pill my-2 mx-4"
         :class="[`btn-${getButtonColor(genre)}`, 
                 {'border border-3 border-dark': genre === activeGenre}]"        
         @click="fetchBooksByGenre(genre)"

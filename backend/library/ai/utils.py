@@ -28,6 +28,7 @@ def similarity_search(query):
     chunks = info_chunks()
     # Create in-memory vector store (FAISS)
     vector_store = FAISS.from_documents(chunks, embeddings)
+    print("Vector store", type(vector_store))
     # perform the similarity search
     results = vector_store.similarity_search(query, k=10)
     context = "\n\n".join([doc.page_content for doc in results])
