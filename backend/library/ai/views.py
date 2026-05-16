@@ -43,11 +43,11 @@ class ChatView(APIView):
                     continue
         print({
             "thread_id": config["configurable"]["thread_id"],
-            "result": response if response else "",
+            "result": response,
             "interrupt": interrupt
         })
         return Response ({
             "thread_id": str(config["configurable"]["thread_id"]),
-            "result": response if response else "",
+            "result": response,
             "interrupt": interrupt
         })
