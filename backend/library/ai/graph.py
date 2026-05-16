@@ -14,6 +14,7 @@ load_dotenv()
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 checkpointer = InMemorySaver()
 
+
 class AgentState(TypedDict):
     user_input: str
     username: Optional[str]
@@ -48,7 +49,6 @@ def info_tool(state: AgentState):
 
 
 def complaint_tool(state: AgentState):
-    user_input = state["user_input"]
     username = state["username"]
     user = User.objects.get(username=username)
     answer = interrupt(
@@ -66,7 +66,7 @@ def route_intent(state: AgentState):
     return state["intent"]
 
 
-def graph_builder(checkpointer):
+def graph_builder():
     builder = StateGraph(AgentState)
     builder.add_node("classifier", classify_intent)
     builder.add_node("info", info_tool)
@@ -92,6 +92,6 @@ def graph_builder(checkpointer):
     return graph
 
 
-graph = graph_builder(checkpointer)
+
 
     

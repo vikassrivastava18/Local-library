@@ -4,12 +4,12 @@ from langgraph.types import Command
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .graph import graph
+from .graph import graph_builder
 
 # Create your views here.
 class ChatView(APIView):
     def post(self, request):
-        global graph
+        graph = graph_builder()
         # Perform similarity search on the library data
         query = request.data.get("query")
         thread_id = request.data.get("thread_id")
