@@ -22,7 +22,7 @@
 
                             <div v-for="copy in books" :key="copy.id" class="mb-3 p-4">
                                 <img v-if="copy.cover" :src="copy.cover" alt="book cover" class="img-fluid">
-                                <img v-else src="@/assets/book.jpg" alt="book cover" class="img-fluid">
+                                <img v-else src="../../assets/book.jpg" alt="book cover" class="img-fluid">
                                 <p>
                                     Book: {{ copy.book_name }}
                                 </p>

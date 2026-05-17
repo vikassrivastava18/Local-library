@@ -44,7 +44,7 @@
         <ul class="navbar-nav mb-2 ms-4 mb-lg-0">
           <li class="nav-item me-4">
             <router-link :to="`/profile`" class="nav-link">
-              <img src="@/assets/profile_new.png" alt="Profile" class="profile-img" />
+              <img src="../../assets/profile_new.png" alt="Profile" class="profile-img" />
             </router-link>
           </li>
           <li class="nav-item ms-4">

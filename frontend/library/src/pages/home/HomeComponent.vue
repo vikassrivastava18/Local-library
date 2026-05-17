@@ -42,7 +42,7 @@
 
           <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
           <img v-else-if="book.cover_url" :src="book.cover_url" alt="Book cover" class="img-fluid" />
-          <img v-else src="@/assets/book.jpg" alt="Book cover" class="img-fluid" />
+          <img v-else src="../../assets/book.jpg" alt="Book cover" class="img-fluid" />
 
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">
