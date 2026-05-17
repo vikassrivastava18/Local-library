@@ -17,7 +17,7 @@
                             style="max-height: 300px; object-fit: contain;">
                         <img v-else-if="book.cover_url" :src="book.cover_url" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
-                        <img v-else src="@/assets/book.jpg" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
+                        <img v-else src="../../assets/book.jpg" class="img-fluid d-block mx-auto mt-4" alt="Book Cover"
                             style="max-height: 300px; object-fit: contain;">
 
                     </div>

@@ -1,4 +1,0 @@
-- Add logger for debugging
-
-- Add user phone number as a mandatory field. Also allow Admin to approve a user's status.
-

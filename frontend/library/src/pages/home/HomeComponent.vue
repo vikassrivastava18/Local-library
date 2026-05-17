@@ -4,7 +4,7 @@
   <!-- Main Content -->
   <main class="container my-2">
     <!-- Quote Section -->
-    <section class="mb-1 text-center px-3 py-2">
+    <section class="text-center px-3 pt-2">
       <blockquote class="fs-4 fst-italic text-secondary mx-auto">
         “I will learn whatever is great, wherever I find it.”
         <footer class="blockquote-footer mt-0">Swami Vivekananda</footer>
@@ -16,7 +16,7 @@
         v-for="genre in genres" 
         :key="genre"
         type="button" 
-        class="btn px-4 py-2 rounded-pill m-2"
+        class="btn px-4 py-2 rounded-pill my-2 mx-4"
         :class="[`btn-${getButtonColor(genre)}`, 
                 {'border border-3 border-dark': genre === activeGenre}]"        
         @click="fetchBooksByGenre(genre)"
@@ -42,7 +42,7 @@
 
           <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
           <img v-else-if="book.cover_url" :src="book.cover_url" alt="Book cover" class="img-fluid" />
-          <img v-else src="@/assets/book.jpg" alt="Book cover" class="img-fluid" />
+          <img v-else src="../../assets/book.jpg" alt="Book cover" class="img-fluid" />
 
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">

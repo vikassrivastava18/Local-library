@@ -1,18 +1,18 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
 WORKDIR /app
 
 COPY ./frontend/library/package*.json ./
+
 RUN npm install
 
-# Copy application code
-COPY ./frontend/library /app
+COPY ./frontend/library .
 
-# Expose the Vue dev server port
-EXPOSE 8080
+RUN npm run build
 
-# Enable file watching in Docker (important for hot reload)
-ENV CHOKIDAR_USEPOLLING=true
 
-# Start the Vue dev server
-CMD ["npm", "run", "serve", "--", "--host", "0.0.0.0"]
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80

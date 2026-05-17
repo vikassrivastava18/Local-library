@@ -4,17 +4,16 @@ from langgraph.types import Command
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .graph import graph
+from .graph import graph_builder
 
 # Create your views here.
 class ChatView(APIView):
     def post(self, request):
-        global graph
+        graph = graph_builder()
         # Perform similarity search on the library data
         query = request.data.get("query")
         thread_id = request.data.get("thread_id")
         interrupt_bool = request.data.get("interrupt")
-        print("Interrupt bool: ", interrupt_bool)
         username = request.user.username
 
         config = {
@@ -24,7 +23,7 @@ class ChatView(APIView):
         }
 
         state = {"user_input": query, "username": username}
-        if interrupt_bool != "false":
+        if interrupt_bool and interrupt_bool != "false":
             command = Command(resume=query)
             result = graph.stream(command, config)
         else:
