@@ -19,9 +19,7 @@ app.mount('#app')
 // Redirect to login page in case of authentication error
 axios.interceptors.response.use(
   response => response,
-  error => {
-    console.log("Coming..");
-    
+  error => {    
     // Add more error handling here
     if (error.response && [401, 403].includes(error.response.status)) {
       console.log("Login failed.");

@@ -5,6 +5,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
 from catalog.models import LibraryInfo
 
+
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
 
 

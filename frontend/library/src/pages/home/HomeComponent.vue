@@ -25,7 +25,6 @@
       </button>
     </section>
 
-
     <h2 class="text-center mb-4" id="homeHeader">
       {{activeGenre}} Books
     </h2>

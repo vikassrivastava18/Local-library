@@ -6,8 +6,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.utils import timezone
-from django.db import IntegrityError, transaction
-from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
 from rest_framework import generics, status
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
@@ -18,7 +17,7 @@ from catalog.models import BookInstance, Author, Book
 from .serializers import UserProfileSerializer, LoadBookSerializer
 from .models import UserProfile
 from catalog.models import Genre
-from .utils import load_books_data, extract_book_info
+
 
 logger = logging.getLogger(__name__)
 
@@ -168,9 +167,3 @@ class CreateBookInstances(APIView):
             status=status.HTTP_201_CREATED
         )
 
-
-
-
-
-
-    
