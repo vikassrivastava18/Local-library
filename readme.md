@@ -3,7 +3,14 @@
 
 ## Purpose
 
-Build an application for a local library where people can find their favorite books and get them on loan. Also they can chat with an AI agent for info like "Is the Library open today?"
+Build an application for a local library where people can find their favorite books and get them on loan. Also they can chat with an AI agent for info like "Is the Library open today?". They can also register complaints like - "I found that the library is not well lit and has ventilation issues. Kindly look into the matter."
+
+
+## Technology Stack
+
+- **Backend:** Django  
+- **Frontend:** VueJS  
+- **Containerization:** Docker
 
 ## User Groups
 
@@ -14,18 +21,13 @@ Build an application for a local library where people can find their favorite bo
 
 - **Librarian:**  
   - Manage book instances.
-
-## Technology Stack
-
-- **Backend:** Django  
-- **Frontend:** VueJS  
-- **Containerization:** Docker
+    
 
 ## Features
 
-- User authentication with ID proof.
-- Account approval by librarian after ID verification.
-- Librarian ability to blacklist a user.
+- User authentication using email and password.
+- Ability to search and get books on loan for fixed duration.
+- Email user and admin if a book has not been retuned in allowed duration.
 
 
 ## Running the Application
