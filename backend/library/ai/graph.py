@@ -52,7 +52,7 @@ def complaint_tool(state: AgentState):
     username = state["username"]
     user = User.objects.get(username=username)
     answer = interrupt(
-        # This value will be sent to the client
+        # This message will be sent to the client
         # as part of the interrupt information.
         "Could you please elaborate your problem, tell us when this happened?"
     )
