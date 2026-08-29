@@ -56,12 +56,13 @@ async function submitForm() {
       const data = await response.json();
       console.log("Data: ", data);
       if (data.interrupt === "") {
-        const resultText = data.result;        
+        const resultText = data.result;
+        document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
       } else {
-        const resultText = data.interrupt;        
+        const resultText = data.interrupt;
+        document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
       }
-      document.querySelector('.queryResults').innerHTML = `<p>Question: ${query.value}` + `<p>Answer: ${resultText}</p>` + document.querySelector('.queryResults').innerHTML;
-
+      
       localStorage.setItem("threadId", data.thread_id)
       if (data.interrupt) localStorage.setItem("interrupt", true) 
       else localStorage.setItem("interrupt", false) 
