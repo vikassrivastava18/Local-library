@@ -38,7 +38,6 @@
                             </span>
 
                         </div>
-
                         <div class="card-body">
                             <h5 class="card-title">Author: {{ book.author_name }}</h5>
                             <p class="card-text"><strong>Summary:</strong> {{ book.summary }}</p>
@@ -60,11 +59,9 @@
                                 </p>
                                 <p class="text-muted">
                                     <strong>Id:</strong> {{ copy.id }}
-                                </p>
-                                
+                                </p>                                
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -106,7 +103,7 @@
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
-import { backendUrl } from '@/config';
+import { backendUrl, apiRequest } from '@/config';
 
 export default {
     name: 'BookComponent',
@@ -155,34 +152,35 @@ export default {
             }
         },
 
-        async borrowBook() {
-            // Implement borrow logic here
-            const id = this.book.instances.filter(inst => inst.status === 'a').map(inst => inst.id)[0]
-            const url = `${backendUrl}catalog/borrow-book/${id}`;
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'token ' + localStorage.getItem('auth_token')
-                    },
-                })
-                if (response.ok) {
-                    console.log('Sucessfully loaned');
-                    this.success = 'Book has been assigned to you on loan, please collect from library by tomorrow!';
 
-                } else {
-                    const data = await response.json()
-                    this.error = data['error']
-                }
-            } catch (err) {
-                this.error = 'Network error. Please try again.'
-            } finally {
-                this.loading = false
-                // Close the modal
-                document.querySelector(".btn-close").click()
-            }
-        }
+async borrowBook() {
+    this.loading = true;
+    this.error = '';
+
+    const id = this.book.instances
+        .find(inst => inst.status === 'a')
+        ?.id;
+
+    if (!id) {
+        this.error = 'No available copy of this book.';
+        this.loading = false;
+        return;
+    }
+
+    try {
+        await apiRequest(`catalog/borrow-book/${id}`, {
+            method: 'PUT',
+        });
+
+        this.success =
+            'Book has been assigned to you on loan, please collect from library by tomorrow!';
+    } catch (err) {
+        this.error = err.message || 'Network error. Please try again.';
+    } finally {
+        this.loading = false;
+        document.querySelector('.btn-close')?.click();
+    }
+}
     },
     mounted() {
         this.getBookDetails()
