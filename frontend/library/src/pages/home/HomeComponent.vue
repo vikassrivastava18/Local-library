@@ -74,7 +74,6 @@ import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
 
-
 const store = useStore();
 
 const books = computed(() => store.getters['books/books']);

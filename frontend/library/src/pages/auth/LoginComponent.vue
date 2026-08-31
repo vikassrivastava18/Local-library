@@ -16,50 +16,40 @@
   </form>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { backendUrl } from '../../config'
 
-export default {
-  name: 'LoginComponent',
-  components: {
+const form = ref({
+  username:'',
+  password: ''
+})
+const router = useRouter()
+const error = ref('')
 
-  },
-  data() {
-    return {
-      form: {
-        username: '',
-        password: ''
-      },
-      error: '',
-      success: ''
-    }
-  },
-  methods: {
-    async login() {
-      this.error = ''
-      this.success = ''
+const login = async ()=> {
       try {
         const url = backendUrl + 'auth/login/'
         const response = await fetch(url, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(this.form)
+          body: JSON.stringify(form.value)
         })
         if (response.ok) {
           const data =await response.json();
           const token = data.token
           localStorage.setItem('auth_token', token)
-          this.$router.push({ name: 'Home' })
+          router.push({ name: 'Home' })
         } else {
           const data = await response.json()
-          this.error = data['non_field_errors']
+          error.value = data['non_field_errors']
         }
       } catch (err) {
-        this.error = 'Network error. Please try again.'
+        error.value = 'Network error. Please try again.'
       }
     }
-  }
-}
+
 </script>
 
 <style>

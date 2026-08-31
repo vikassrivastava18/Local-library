@@ -49,13 +49,6 @@
   </div>
 </template>
 
-<script>
-
-export default {
-  name: 'AuthCommmon',
-
-}
-</script>
 
 <style scoped>
 .auth-wrapper {
