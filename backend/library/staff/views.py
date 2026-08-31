@@ -119,9 +119,7 @@ class LoadBookView(APIView):
         genre = serializer.validated_data["genre"]
         books = LoadBookView.get_books_data(genre)
         genre = Genre.objects.get(name__iexact=genre)
-        print("Genre: ", genre)
-        print("Books: ", books)
-        # count= len(books["items"])
+
         for book in books["items"]:
             book_data = LoadBookView.get_book_info(book)
             try:
@@ -149,7 +147,7 @@ class CreateBookInstances(APIView):
         books = Book.objects.all()
 
         for book in books:
-            statuses = ["m", "o", "a", "r"]
+            statuses = ["m", "o", "a", "a"]
             for stat in statuses:
                 if stat == "o":
                     due_date = timezone.now().date() + timedelta(days=30)

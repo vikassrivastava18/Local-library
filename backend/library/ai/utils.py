@@ -3,7 +3,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI
-from catalog.models import LibraryInfo
 
 
 llm = ChatOpenAI(model="gpt-4o", temperature=0)
@@ -14,14 +13,6 @@ embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
 
 
 def info_chunks():
-    # libraryInfo = LibraryInfo.objects.all()
-    # documents = []
-    # for info in libraryInfo:
-    #     document_chunk = Document(page_content=info.category + ": " + info.information)
-    #     documents.append(document_chunk)
-
-    # return documents
-
     documents = [
         Document(
             page_content="Saraswati Public Library is a well-known public library located in Lucknow, Uttar Pradesh. It was established in the year 1998 to promote reading and education among the local community."

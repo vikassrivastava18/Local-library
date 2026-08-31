@@ -62,6 +62,7 @@ def complaint_tool(state: AgentState):
 
     return state
 
+
 def route_intent(state: AgentState):
     return state["intent"]
 

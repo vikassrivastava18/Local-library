@@ -5,11 +5,14 @@ from .models import (Book,
                      Genre,
                      LibraryInfo)
 # Register your models here.
-
-admin.site.register(Book)
 admin.site.register(Author)
 admin.site.register(Genre)
 admin.site.register(LibraryInfo)
+
+
+@admin.register(Book)
+class BookAdmin(admin.ModelAdmin):
+    list_display = ('title', 'genre')
 
 @admin.register(BookInstance)
 class BookInstanceAdmin(admin.ModelAdmin):

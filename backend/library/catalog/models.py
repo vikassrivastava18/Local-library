@@ -93,6 +93,13 @@ class Author(models.Model):
 
 import uuid # Required for unique book instances
 
+LOAN_STATUS = (
+    ('m', 'Maintenance'),
+    ('o', 'On loan'),
+    ('a', 'Available'),
+    ('r', 'Reserved'),
+)
+
 class BookInstance(models.Model):
 
     """Model representing a specific copy of a book (i.e. that can be borrowed from the library)."""
@@ -102,13 +109,6 @@ class BookInstance(models.Model):
     imprint = models.CharField(max_length=200)
     due_back = models.DateField(null=True, blank=True)
     borrower = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
-    LOAN_STATUS = (
-        ('m', 'Maintenance'),
-        ('o', 'On loan'),
-        ('a', 'Available'),
-        ('r', 'Reserved'),
-    )
-
     status = models.CharField(
         max_length=1,
         choices=LOAN_STATUS,

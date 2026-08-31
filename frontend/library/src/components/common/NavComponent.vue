@@ -58,81 +58,75 @@
   </nav>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { backendUrl } from '@/config';
 
-export default {
-  name: 'NavComponent',
-  data() {
-    return {
-      // Current search text
-      searchBook: '',
-      // Suggestions returned from backend
-      bookList: [],
-      // ...existing code...
-    }
-  },
-  methods: {
-    // Logs the user out by calling the backend logout endpoint
-    async handleLogout() {
-      this.error = ''
-      this.success = ''
-      try {
-        const response = await fetch(`${backendUrl}auth/logout/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'token ' + localStorage.getItem('auth_token')
-          },
-        })
-        if (response.ok) {
-          localStorage.removeItem('auth_token')
-          this.$router.push({ name: 'AuthLogin' })
-        } else {
-          const data = await response.json()
-          this.error = data['non_field_errors']
-        }
-      } catch (err) {
-        this.error = 'Network error. Please try again.'
-      }
-    },
+const router = useRouter();
+const searchBook = ref('');
+const bookList = ref([]);
+const error = ref('');
+const success = ref('');
 
-    // Performs search when user has typed >= 4 characters
-    async search() {
-      
-      if (this.searchBook.length >= 4) {
-        const url = `${backendUrl}catalog/search-book/${this.searchBook}`;
-        try {
-          const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'token ' + localStorage.getItem('auth_token')
-            },
-          })
-          if (response.ok) {
-            const data = await response.json();
-            this.bookList = data.books;
-          } else {
-            const data = await response.json()
-            this.error = data['non_field_errors']
-          }
-        } catch (err) {
-          this.error = 'Network error. Please try again.'
-        }
-      } else {
-        // Clear suggestions if input too short
-        this.bookList = []
-      }
-    },
-    // Select a suggestion and navigate to the book detail
-    selectBook(book) {
-      this.searchBook = book.title
-      this.bookList = []
-      this.$router.push({ name: 'BookDetail', params: { id: book.id } })
+const handleLogout = async () => {
+  error.value = '';
+  success.value = '';
+
+  try {
+    const response = await fetch(`${backendUrl}auth/logout/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + localStorage.getItem('auth_token')
+      },
+    });
+
+    if (response.ok) {
+      localStorage.removeItem('auth_token');
+      router.push({ name: 'AuthLogin' });
+    } else {
+      const data = await response.json();
+      error.value = data['non_field_errors'];
     }
+  } catch (err) {
+    error.value = 'Network error. Please try again.';
   }
-}
+};
+
+const search = async () => {
+  if (searchBook.value.length >= 4) {
+    const url = `${backendUrl}catalog/search-book/${searchBook.value}`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + localStorage.getItem('auth_token')
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        bookList.value = data.books;
+      } else {
+        const data = await response.json();
+        error.value = data['non_field_errors'];
+      }
+    } catch (err) {
+      error.value = 'Network error. Please try again.';
+    }
+  } else {
+    bookList.value = [];
+  }
+};
+
+const selectBook = (book) => {
+  searchBook.value = book.title;
+  bookList.value = [];
+  router.push({ name: 'BookDetail', params: { id: book.id } });
+};
 </script>
 
 <style scoped>
