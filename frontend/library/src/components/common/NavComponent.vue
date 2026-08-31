@@ -41,13 +41,13 @@
         </form>
 
         <!-- Profile and logout -->
-        <ul class="navbar-nav mb-2 ms-4 mb-lg-0">
-          <li class="nav-item me-4">
+        <ul class="navbar-nav mb-2 ms-5 mb-lg-0">
+          <li class="nav-item ms-4 me-0">
             <router-link :to="`/profile`" class="nav-link">
               <img src="../../assets/profile_new.png" alt="Profile" class="profile-img" />
             </router-link>
           </li>
-          <li class="nav-item ms-4">
+          <li class="nav-item ms-1 me-0">
             <a class="nav-link" href="#" @click.prevent="handleLogout">
               <button class="btn btn-danger">Logout</button>
             </a>

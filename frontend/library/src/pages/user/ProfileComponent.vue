@@ -11,15 +11,12 @@
             <h5 class="text-danger">{{ error }}</h5>
 
             <div class="card shadow">
-                <div class="row g-0">
-                    
+                <div class="row g-0">                    
                     <div>
                         <div class="card-header">
                             <h4 style="display: inline;">{{ user }}</h4>
-
                         </div>
                         <div class="card-body">
-
                             <div v-for="copy in books" :key="copy.id" class="mb-3 p-4">
                                 <img v-if="copy.cover" :src="copy.cover" alt="book cover" class="img-fluid">
                                 <img v-else src="../../assets/book.jpg" alt="book cover" class="img-fluid">
@@ -29,13 +26,11 @@
                                 <p>
                                     <strong>Due to be returned:</strong> {{ copy.due_back }}
                                 </p>
- 
                                 <p class="text-muted">
                                     <strong>Id:</strong> {{ copy.id }}
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -46,61 +41,50 @@
     <footer-component />
 </template>
 
-<script>
+<script setup>
+import { ref, onMounted } from 'vue';
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
 import { backendUrl } from '@/config';
 
-export default {
-    name: 'ProfileComponent',
-    data() {
-        return {
-            user: "",
-            books: [],
-            loading: true,
-            booksAvailable: 0,
-            success: '',
-            error: '',
-        }
-    },
-    components: {
-        NavComponent,
-        FooterComponent,
-        LoaderComponent
-    },
-    methods: {
-        async getProfileDetails() {
-            const url = `${backendUrl}catalog/user-book-list`
-            try {
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'token ' + localStorage.getItem('auth_token')
-                    },
-                })
-                if (response.ok) {
-                    const data = await response.json(); // <-- fix here
-                    this.books = data.books;
-                    this.user = data.user;
-                    console.log("books: ", data);
-                                        
-                } else {
-                    const data = await response.json()
-                    this.error = data['non_field_errors']
-                }
-            } catch (err) {
-                this.error = `Error occured: ${err}`
-            } finally {
-                this.loading = false
-            }
-        }
-    },
 
-    mounted() {
-        this.getProfileDetails()
+const user = ref('');
+const books = ref([]);
+const loading = ref(true);
+const booksAvailable = ref(0);
+const success = ref('');
+const error = ref('');
 
+const getProfileDetails = async () => {
+    const url = `${backendUrl}catalog/user-book-list`;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'token ' + localStorage.getItem('auth_token')
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            books.value = data.books;
+            user.value = data.user;
+            booksAvailable.value = data.books?.length || 0;
+            console.log('books: ', data);
+        } else {
+            const data = await response.json();
+            error.value = data['non_field_errors'];
+        }
+    } catch (err) {
+        error.value = `Error occured: ${err}`;
+    } finally {
+        loading.value = false;
     }
-}
+};
+
+onMounted(() => {
+    getProfileDetails();
+});
 </script>

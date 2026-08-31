@@ -1,6 +1,7 @@
 <template>
   <!-- Navbar -->
   <nav-component />
+
   <!-- Main Content -->
   <main class="container my-2">
     <!-- Quote Section -->
@@ -12,33 +13,37 @@
     </section>
 
     <section class="genres text-center">
-      <button 
-        v-for="genre in genres" 
+      <button
+        v-for="genre in genres"
         :key="genre"
-        type="button" 
+        type="button"
         class="btn px-4 py-2 rounded-pill my-2 mx-4"
-        :class="[`btn-${getButtonColor(genre)}`, 
-                {'border border-3 border-dark': genre === activeGenre}]"        
+        :class="[
+          `btn-${getButtonColor(genre)}`,
+          { 'border border-3 border-dark': genre === activeGenre }
+        ]"
         @click="fetchBooksByGenre(genre)"
-        >
+      >
         {{ genre }}
       </button>
     </section>
 
     <h2 class="text-center mb-4" id="homeHeader">
-      {{activeGenre}} Books
+      {{ activeGenre }} Books
     </h2>
-    <div class="row g-3 justify-content-center">
 
-      <!-- Book 1 -->
+    <div class="row g-3 justify-content-center">
       <div v-if="loading">
         <LoaderComponent />
       </div>
 
-      <div v-else v-for="book of books" 
-        :key="book.id" class="col-sm-6 col-md-4 col-lg-3">
-        <div class="book-card h-100" style="max-height: 400px;">
-
+      <div
+        v-else
+        v-for="book of books"
+        :key="book.id"
+        class="col-sm-6 col-md-4 col-lg-3"
+      >
+        <div class="book-card h-100">
           <img v-if="book.cover" :src="book.cover" alt="Book cover" class="img-fluid" />
           <img v-else-if="book.cover_url" :src="book.cover_url" alt="Book cover" class="img-fluid" />
           <img v-else src="../../assets/book.jpg" alt="Book cover" class="img-fluid" />
@@ -50,78 +55,69 @@
             <p class="card-text author">{{ book.author_name }}</p>
             <p class="card-text description">
               {{ shortSummary(book.summary) }}
-            </p>            
+            </p>
           </div>
         </div>
       </div>
-
     </div>
-
   </main>
+
   <!-- Footer -->
   <footer-component />
 </template>
 
-<script>
-import { mapGetters, mapActions } from "vuex";
+<script setup>
+import { computed, onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
 
 import FooterComponent from '../../components/common/FooterComponent.vue';
 import NavComponent from '../../components/common/NavComponent.vue';
 import LoaderComponent from '../../components/common/LoaderComponent.vue';
 
-export default {
-  name: 'HomeComponent',
-  computed: {
-    ...mapGetters("books", ["books", "isLoading", "activeGenre"]),
-    loading() {
-      return this.isLoading;
-    }
-  },
-  data() {
-    return {
-      genres: ["Fiction", "History", "Science", "Biography", "Philosophy"],
-      error: '',
-    }
 
-  },
-  components: {
-    NavComponent,
-    FooterComponent,
-    LoaderComponent,
-    // GenreListComponent
-  },
-  methods: {
+const store = useStore();
 
-    ...mapActions("books", ["fetchBooksByGenre"]),
-    loadBooks(genre) {
-      this.fetchBooksByGenre(genre);
-    },
-    
-    getButtonColor(genre) {
-      const genreColors = {
-        Fiction: 'primary',
-        History: 'success',
-        Science: 'info',
-        Biography: 'warning',
-        Philosophy: 'danger',
-      };
-      return genreColors[genre] || 'secondary';
-    },
-    shortSummary(text, words = 15) {
-      if (!text) return "";
-      const parts = text.split(" ");
-      return parts.length > words
-        ? parts.slice(0, words).join(" ") + "..."
-        : text;
-    }
-  },
-  created() {
-    if (!this.$store.state.books.activeGenre) {
-      console.log("Bug")
-      this.fetchBooksByGenre("Featured");
-    }
-  }
+const books = computed(() => store.getters['books/books']);
+const isLoading = computed(() => store.getters['books/isLoading']);
+const activeGenre = computed(() => store.getters['books/activeGenre']);
+const loading = computed(() => isLoading.value);
+
+const genres = ref(['Fiction', 'History', 'Science', 'Biography', 'Philosophy']);
+// const error = ref('');
+
+const fetchBooksByGenre = (genre) => store.dispatch('books/fetchBooksByGenre', genre);
+
+const loadBooks = (genre) => {
+  fetchBooksByGenre(genre);
+};
+
+onMounted(() => {
+  if (!store.state.books.activeGenre) {
+  loadBooks('Featured');
 }
+})
+
+const getButtonColor = (genre) => {
+  const genreColors = {
+    Fiction: 'primary',
+    History: 'success',
+    Science: 'info',
+    Biography: 'warning',
+    Philosophy: 'danger',
+  };
+
+  return genreColors[genre] || 'secondary';
+};
+
+const shortSummary = (text, words = 15) => {
+  if (!text) return '';
+
+  const parts = text.split(' ');
+
+  return parts.length > words
+    ? parts.slice(0, words).join(' ') + '...'
+    : text;
+};
 
 </script>
 
@@ -194,6 +190,7 @@ body {
 
 /* Book cards */
 .book-card {
+  max-height: 400px;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgb(0 0 0 / 0.1);
