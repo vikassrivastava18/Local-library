@@ -39,7 +39,6 @@ def similarity_search(query):
     # get the info chunks
     
     # Create in-memory vector store (FAISS)
-    
     print("Vector store", type(vector_store))
     # perform the similarity search
     results = vector_store.similarity_search(query, k=2)
