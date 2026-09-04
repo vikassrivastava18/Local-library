@@ -13,6 +13,7 @@ from .serializers import (BookSerializer, AuthorSerializer,
 
 logger = logging.getLogger(__name__)
 
+
 class IndexView(APIView):
     permission_classes = [AllowAny]
 

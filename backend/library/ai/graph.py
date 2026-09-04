@@ -10,6 +10,7 @@ from .utils import generate_ai_response, similarity_search
 from .models import Complain
 from django.contrib.auth.models import User
 
+
 load_dotenv()
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
 checkpointer = InMemorySaver()

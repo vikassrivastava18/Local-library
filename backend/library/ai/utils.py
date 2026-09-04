@@ -42,7 +42,7 @@ def similarity_search(query):
     
     print("Vector store", type(vector_store))
     # perform the similarity search
-    results = vector_store.similarity_search(query, k=3)
+    results = vector_store.similarity_search(query, k=2)
     context = "\n\n".join([doc.page_content for doc in results])
     print("context: ", context)
     return context
