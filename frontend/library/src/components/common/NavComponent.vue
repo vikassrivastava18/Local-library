@@ -48,9 +48,9 @@
               <img src="../../assets/profile_new.png" alt="Profile" class="profile-img" />
             </router-link>
           </li>
-          <li class="nav-item ms-1 me-0">
+          <li class="nav-item ms-2 me-0">
             <a class="nav-link" href="#" @click.prevent="handleLogout">
-              <button class="btn btn-danger">Logout</button>
+              <button class="btn btn-sm btn-danger mt-2">Logout</button>
             </a>
           </li>
         </ul>
