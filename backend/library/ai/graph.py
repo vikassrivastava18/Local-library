@@ -1,3 +1,5 @@
+import os
+import requests
 from typing import TypedDict, Optional
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -24,18 +26,54 @@ class AgentState(TypedDict):
     reteieved_docs: Optional[list]
 
 
-def classify_intent(state: AgentState):
-    prompt = f"""
-    Classify the user input info one of the two categories:
-    1. info
-    2. complaint
+# def classify_intent(state: AgentState):
+#     prompt = f"""
+#     Classify the user input info one of the two categories:
+#     1. info
+#     2. complaint
 
-    Input: {state['user_input']}
-    Respond with only one word: info or complaint
-    """
-    result = llm.invoke(prompt).content.strip().lower()
-    print("Intent: ", result)
-    state["intent"] = result
+#     Input: {state['user_input']}
+#     Respond with only one word: info or complaint
+#     """
+#     result = llm.invoke(prompt).content.strip().lower()
+#     print("Intent: ", result)
+#     state["intent"] = result
+#     return state
+
+
+def classify_intent(state: AgentState):
+    print("user input: ", state["user_input"])
+    response = requests.post(
+            "https://openrouter.ai/api/alpha/decisions",
+            headers={
+                "Authorization": f"Bearer {os.environ['JEV_API_KEY']}",
+                "Content-Type": "application/json",
+            },
+            json={
+                "model": "typesafe/jev-1.13",
+                "state": {
+                    "topic": "local library",
+                    "query": state['user_input'],
+                },
+                "questions": {
+                    "is_info": {
+                        "type": "noul",
+                        "instructions": (
+                            "Determine whether the user is asking for information"
+                            "or making a complaint."
+                        ),
+                        "criteria": {
+                            "true": "The user needs some information.",
+                            "false": "The user wants to register a complaint.",
+                        },
+                    }
+                },
+            },
+        )
+    response.raise_for_status()
+    print("JEV answer: ", response.json()["answers"])
+    needs_info = response.json()["answers"]["is_info"]["noul"] > 0.5
+    state["intent"] = "info" if needs_info else "complaint"
     return state
 
 
