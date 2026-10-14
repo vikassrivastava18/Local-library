@@ -11,7 +11,13 @@
       </button>
       <textarea placeholder="Your query" name="msg" v-model="query" required></textarea>
 
-      <button type="submit" class="btn" @click="submitForm()" :disabled="disableChatBtn">Send</button>
+      <button type="submit" class="btn" @click="submitForm()" :disabled="disableChatBtn">
+        Send
+        <span v-if="loading">
+        ....
+      </span>
+      </button>
+      
       <div class="container queryResults">
       </div>
 
@@ -26,6 +32,7 @@ import { ref } from 'vue';
 const url = backendUrl + 'ai/chat';
 const query = ref('');
 const disableChatBtn = ref(false);
+const loading = ref(false);
 
 function openForm() {
   document.getElementById("myForm").style.display = "block";
@@ -38,6 +45,7 @@ function closeForm() {
 async function submitForm() {
   console.log("URL: ", url);
   disableChatBtn.value = true
+  loading.value = true
   const threadId = localStorage.getItem("threadId")
   const interrupt = localStorage.getItem("interrupt")
   try {
@@ -72,7 +80,7 @@ async function submitForm() {
     this.error = 'Network error. Please try again.'
   } finally {
     disableChatBtn.value = false;
-    console.log("Query cycle complete");
+    loading.value = false;
   }
 }
 </script>

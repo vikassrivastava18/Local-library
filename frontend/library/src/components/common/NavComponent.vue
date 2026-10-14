@@ -6,7 +6,7 @@
       <!-- Brand / Home link -->
       <router-link :to="`/`" class="navbar-brand fs-4 ms-0 brand">
         <img src="../../assets/library.svg" width=50 alt="">
-        Saraswati Public Library
+        &nbsp; Saraswati Public Library
       </router-link>
 
       <button class="navbar-toggler" type="button" 
