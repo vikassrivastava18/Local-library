@@ -1,78 +1,118 @@
+from unittest.mock import patch
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 from django.test import TestCase
-from datetime import date, datetime
-# Create your tests here.
+from django.urls import reverse
+from rest_framework.test import APIClient
 
-# Test 1 - Only librarian can update a Book, Author.
-import uuid
-
-from django.contrib.auth.models import Permission, User
-from catalog.models import Author, Genre, Book, BookInstance # Required to grant the permission needed to set a book as returned.
+from catalog.models import Author, Book, BookInstance, Genre
 
 
-class RenewBookInstancesViewTest(TestCase):
+class StaffViewPermissionsTest(TestCase):
     def setUp(self):
-        # Create a user
-        test_user1 = User.objects.create_user(username='testuser1', password='1X<ISRUkw+tuK')
-        test_user2 = User.objects.create_user(username='testuser2', password='2HJ1vRV0Z&3iD')
+        user_model = get_user_model()
+        self.regular_user = user_model.objects.create_user(
+            username="regular-user",
+            password="test-password",
+        )
+        self.staff_user = user_model.objects.create_user(
+            username="library-staff",
+            password="test-password",
+        )
+        permission = Permission.objects.get(
+            content_type__app_label="catalog",
+            codename="can_mark_returned",
+        )
+        self.staff_user.user_permissions.add(permission)
 
-        test_user1.save()
-        test_user2.save()
+        author = Author.objects.create(first_name="Test", last_name="Author")
+        self.genre = Genre.objects.create(name="fiction")
+        self.book = Book.objects.create(
+            title="Test Book",
+            author=author,
+            summary="A book for staff endpoint tests.",
+            isbn="1234567890123",
+            genre=self.genre,
+        )
+        self.book_instance = BookInstance.objects.create(
+            book=self.book,
+            imprint="Test imprint",
+            borrower=self.regular_user,
+            status="o",
+        )
+        self.client = APIClient()
 
-        # Give test_user2 permission to renew books.
-        permission = Permission.objects.get(name='Set book as returned')
-        test_user2.user_permissions.add(permission)
-        test_user2.save()
+    def test_only_staff_can_mark_book_as_returned(self):
+        self.client.force_authenticate(user=self.regular_user)
 
-        # Create a book
-        test_author = Author.objects.create(first_name='Dominique', last_name='Rousseau')
-        test_genre = Genre.objects.create(name='Fantasy')
-        # test_language = Language.objects.create(name='English')
-        test_book = Book.objects.create(
-            title='Book Title',
-            summary='My book summary',
-            isbn='ABCDEFG',
-            author=test_author,
-            genre = test_genre
+        response = self.client.patch(
+            reverse(
+                "mark_book_returned",
+                kwargs={"pk": self.book_instance.pk},
+            ),
+            {"status": "a"},
         )
 
-        test_book.save()
+        self.assertEqual(response.status_code, 403)
+        self.book_instance.refresh_from_db()
+        self.assertEqual(self.book_instance.status, "o")
 
-        # Create a BookInstance object for test_user1
-        return_date = datetime.date.today() + datetime.timedelta(days=5)
-        self.test_bookinstance1 = BookInstance.objects.create(
-            book=test_book,
-            imprint='Unlikely Imprint, 2016',
-            due_back=return_date,
-            borrower=test_user1,
-            status='o',
+    def test_staff_can_mark_book_as_returned(self):
+        self.client.force_authenticate(user=self.staff_user)
+
+        response = self.client.patch(
+            reverse(
+                "mark_book_returned",
+                kwargs={"pk": self.book_instance.pk},
+            ),
+            {"status": "a"},
         )
 
-        # Create a BookInstance object for test_user2
-        return_date = datetime.date.today() + datetime.timedelta(days=5)
-        self.test_bookinstance2 = BookInstance.objects.create(
-            book=test_book,
-            imprint='Unlikely Imprint, 2016',
-            due_back=return_date,
-            borrower=test_user2,
-            status='o',
+        self.assertEqual(response.status_code, 200)
+        self.book_instance.refresh_from_db()
+        self.assertEqual(self.book_instance.status, "a")
+
+    def test_only_staff_can_access_load_book(self):
+        self.client.force_authenticate(user=self.regular_user)
+
+        response = self.client.post(
+            reverse("load_book"),
+            {"genre": "fiction"},
         )
-    @classmethod
-    def setUpTestData(cls):
-        print("setUpTestData: Run once to set up non-modified data for all class methods.")
-        pass
 
-    def setUp(self):
-        print("setUp: Run once for every test method to set up clean data.")
-        pass
+        self.assertEqual(response.status_code, 403)
 
-    def test_false_is_false(self):
-        print("Method: test_false_is_false.")
-        self.assertFalse(False)
+    @patch("staff.views.LoadBookView.get_books_data", return_value={"items": []})
+    def test_staff_can_access_load_book(self, _mock_get_books_data):
+        self.client.force_authenticate(user=self.staff_user)
 
-    def test_false_is_true(self):
-        print("Method: test_false_is_true.")
-        self.assertTrue(False)
+        response = self.client.post(
+            reverse("load_book"),
+            {"genre": "fiction"},
+        )
 
-    def test_one_plus_one_equals_two(self):
-        print("Method: test_one_plus_one_equals_two.")
-        self.assertEqual(1 + 1, 2)
+        self.assertEqual(response.status_code, 201)
+
+    def test_only_staff_can_create_book_instances(self):
+        self.client.force_authenticate(user=self.regular_user)
+
+        response = self.client.post(reverse("create_book_instances"))
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            BookInstance.objects.filter(book=self.book).count(),
+            1,
+        )
+
+    def test_staff_can_create_book_instances(self):
+        self.client.force_authenticate(user=self.staff_user)
+
+        response = self.client.post(reverse("create_book_instances"))
+
+        self.assertEqual(response.status_code, 201)
+        instances = BookInstance.objects.filter(book=self.book)
+        self.assertEqual(instances.count(), 5)
+        # self.assertTrue(
+        #     all(instance.borrower == self.staff_user for instance in instances)
+        # )

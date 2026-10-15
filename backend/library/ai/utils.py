@@ -35,15 +35,10 @@ docs = [
 
 vector_store = FAISS.from_documents(docs, embeddings)
 
-def similarity_search(query):
-    # get the info chunks
-    
-    # Create in-memory vector store (FAISS)
-    print("Vector store", type(vector_store))
+def similarity_search(query):    
     # perform the similarity search
     results = vector_store.similarity_search(query, k=2)
     context = "\n\n".join([doc.page_content for doc in results])
-    print("context: ", context)
     return context
 
 

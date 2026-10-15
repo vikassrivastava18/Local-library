@@ -46,7 +46,7 @@ class ModifyUserAccountView(generics.UpdateAPIView):
 
 
 class LoadBookView(APIView):
-    #permission_classes = [CanMarkReturnedPermission]
+    permission_classes = [CanMarkReturnedPermission]
 
     @classmethod
     def get_books_data(cls, genre):
@@ -143,6 +143,8 @@ class LoadBookView(APIView):
 
 
 class CreateBookInstances(APIView):
+    permission_classes = [CanMarkReturnedPermission]
+
     def post(self, request):
         books = Book.objects.all()
 
@@ -164,4 +166,3 @@ class CreateBookInstances(APIView):
             {"message": "Resource created successfully"},
             status=status.HTTP_201_CREATED
         )
-
